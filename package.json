@@ -1,0 +1,18 @@
+{
+  "name": "amagi",
+  "version": "0.0.0",
+  "description": "Discord bot for personal server",
+  "main": "src/bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["discord", "bot", "alpha"],
+  "author": "Zachary Dascil",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^1.7.0",
+    "discord-api-types": "^0.37.37",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3"
+  }
+}
