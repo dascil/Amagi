@@ -31,6 +31,9 @@ module.exports = {
         content: newMsg,
       });
     } catch (err) {
+      const time = new Date().toLocaleTimeString();
+      console.log("\n")
+      console.log("TIME OF ERROR: " + time);
       console.log(err);
       const newMsg = `Something went wrong :( \n Please make sure that your spelling is correct.\n Your tag might also require the series (i.e. fischl_(genshin_impact)) \n If this problem persists, please contact an admin.`;
       await interaction.editReply({
