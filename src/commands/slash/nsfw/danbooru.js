@@ -62,8 +62,8 @@ module.exports = {
         if (
           jsonObj.hasOwnProperty("file_url") &&
           (jsonObj.file_url.endsWith(".png") ||
-            json.file_url.endsWith(".jpg") ||
-            json.file_url.endsWith(".webp"))
+            jsonObj.file_url.endsWith(".jpg") ||
+            jsonObj.file_url.endsWith(".webp"))
         ) {
           break;
         }
