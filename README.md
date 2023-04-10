@@ -8,8 +8,10 @@ A personal bot for a discord server.
 
 - Slash Commands
     - Information commands such as ping
-    - Fetch command to image board like danbooru (testing)
-        - Currently only set-up to work on
+    - Get image from Danbooru based on input (tags)
+        - Returns list of similar tags if tags does not exist
+        - Tags separated by space (Limit 2)
+    - Get similar tags from Danbooru based on input
 
 ## Requirements
 
