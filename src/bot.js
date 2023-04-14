@@ -1,9 +1,9 @@
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const { readdirSync } = require("fs");
-
 require("dotenv").config();
-const { token } = process.env;
-
+const chalk = require("chalk");
+const { DEBUG } = require("./json/config.json");
+const token = process.env['TOKEN'];
 // Create new client
 const client = new Client({
   intents: [
@@ -13,15 +13,23 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-
 // Create collections
 client.slashCommands = new Collection();
-
+client.prefixCommands = new Collection();
+// Add colors for console messages
+client.debugMode = DEBUG;
+client.success = chalk.green;
+client.warning = chalk.yellow;
+client.failure = chalk.red;
+client.debug = chalk.magenta;
+if (client.debugMode) {
+  console.log(client.debug("=== DEBUG MODE ACTIVATED ==="));
+}
 // Get all handler script files and initialize all functions
-const handlerFiles = readdirSync("./src/handlers").filter((file) =>
-  file.endsWith(".js")
-);
-handlerFiles.forEach((file) => require(`./handlers/${file}`)(client));
+readdirSync("./src/functions").forEach((folder) => {
+  const folderFiles = readdirSync(`./src/functions/${folder}`).filter((file) => file.endsWith(".js"));
+  folderFiles.forEach((file) => {require(`./functions/${folder}/${file}`)(client);});
+});
 
 // Establish connection to server
 client.login(token);

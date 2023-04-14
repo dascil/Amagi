@@ -1,7 +1,13 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { tagSuggestor } = require("./helperFunctions/tagSuggestionDanbooru");
-const { handleError } = require("./helperFunctions/handleError");
-const {BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG} = require("./config/danbooruErrors.json");
+const { BLACKLIST } = require("./shared/config/fetchConfig.json");
+const { tagSuggestorDanbooru } = require("./danbooru/functions/tagSuggestionDanbooru");
+const { tagSuggestorYandere } = require("./yandere/functions/tagSuggestionYandere");
+const { handleError } = require("./shared/functions/handleError");
+const {
+  BAD_TAG_MSG,
+  NOT_IN_A_NSFW_CHANNEL_MSG,
+  STANDARD_ERROR_MSG,
+} = require("./shared/config/fetchErrors.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,9 +15,13 @@ module.exports = {
     .setDescription(
       "Gives a list of tags that are similar to input. Accepts only one tag."
     )
-    .addStringOption((option) =>
-      option.setName("tag").setDescription("Tag to look up").setRequired(true)
-    ),
+    .addStringOption((option) => option.setName("tag")
+      .setDescription("Tag to look up")
+      .setRequired(true))
+    .addStringOption((option) => option.setName("board")
+      .setDescription("Board to look tag up on")
+      .setRequired(true)
+      .addChoices({name: 'Danbooru', value: "danbooru"},{name: "Yandere", value: "yandere"})),
   async execute(interaction, client) {
     const msg = await interaction.deferReply({
       fetchReply: false,
@@ -23,16 +33,21 @@ module.exports = {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       let tag = interaction.options.getString("tag");
+      const board = interaction.options.getString("board");
       // Filter out special characters.
       const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|\s]/g;
       tag = tag.replace(filter, "").toLowerCase();
       // Catch unsearchable tags
-      if (tag === "loli" || tag === "shota") {
+      if (BLACKLIST.includes(tag)) {
         newMsg = BAD_TAG_MSG;
       } else {
         try {
-          newMsg = await tagSuggestor(tag);
+          if (board === "danbooru") {
+            newMsg = await tagSuggestorDanbooru(tag);
+          } else {
+            newMsg = await tagSuggestorYandere(tag);
           // Logs any error that occured
+          }
         } catch (error) {
           handleError(error);
         }

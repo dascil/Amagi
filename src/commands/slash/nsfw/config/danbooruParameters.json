@@ -1,5 +1,0 @@
-{
-    "LOOP_RETRIES" : 3,
-    "NOT_FOUND_PROMISE_RESPONSE" : "That record was not found.",
-    "INVALID_TAG_PARTIAL_MESSAGE": "One or more tags is invalid. Check the similar tags below and try again.\n\n"
-}

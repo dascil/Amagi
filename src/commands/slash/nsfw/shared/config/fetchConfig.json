@@ -1,0 +1,5 @@
+{
+    "BLACKLIST": ["loli", "shota", "cub"],
+    "INVALID_TAG_PARTIAL_MESSAGE": "One or more tags is invalid. Check the similar tags below and try again.\n\n",
+    "LOOP_RETRIES" : 3
+}

@@ -1,8 +1,0 @@
-{
-    "BAD_TAG_MSG": "Input contains an unsearchable tag on Danbooru.\nPlease choose another tag.",
-    "NO_SUITABLE_PHOTO_MSG": "Unable to find a suitable photo with that tag.\nPlease try again.",
-    "NOT_IN_A_NSFW_CHANNEL_MSG": "This command can only be used in a NSFW channel.",
-    "SITE_UNREACHABLE_MSG": "Unable to reach Danbooru.\nPlease check if Danbooru is going through maintanence or is down.",
-    "STANDARD_ERROR_MSG": "An error has occured.\nPlease contact an admin and describe what happened.",
-    "TOO_MANY_TAGS_MSG": "You have entered too many tags.\nPlease enter two or less tags."
-}

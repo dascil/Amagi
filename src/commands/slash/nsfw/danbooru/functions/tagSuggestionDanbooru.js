@@ -1,4 +1,5 @@
 const cheerio = require("cheerio");
+const { BLACKLIST } = require("../../shared/config/fetchConfig.json")
 /**
  * Takes in a tag string and returns a string
  * containing similar tags if they exist.
@@ -24,8 +25,7 @@ async function tagSuggestor(tag) {
     const potentialTag = tagList[i].attribs["data-autocomplete-value"];
     if (
       potentialTag.includes(tag) &&
-      potentialTag !== "loli" &&
-      potentialTag !== "shota"
+      !BLACKLIST.includes(potentialTag)
     ) {
       goodTags.push("`" + potentialTag + "`");
     }
@@ -39,5 +39,5 @@ async function tagSuggestor(tag) {
 }
 
 module.exports = {
-  tagSuggestor: tagSuggestor,
+  tagSuggestorDanbooru: tagSuggestor,
 };

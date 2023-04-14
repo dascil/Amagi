@@ -5,16 +5,16 @@ const {
   STANDARD_ERROR_MSG,
   TOO_MANY_TAGS_MSG,
 } = require("./shared/config/fetchErrors.json");
-const { MAX_TAGS } = require("./danbooru/config/danbooruParameters.json");
-const { constainsBadTag } = require("./shared/functions/tagValidation");
-const { getPhoto } = require("./danbooru/functions/getPhotoDanbooru");
+const { MAX_TAGS } = require("./yandere/config/yandereParameters.json");
 const { SFW } = require("../../../json/config.json")
+const { constainsBadTag } = require("./shared/functions/tagValidation");
+const { getPhoto } = require("./yandere/functions/getPhotoYandere");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("danbooru")
+    .setName("yandere")
     .setDescription(
-      "Return random image based on tags. Separate tags by space. Limit 2."
+      "Return random image based on tags. Separate tags by space. Limit 4."
     )
     .addStringOption((option) =>
       option
@@ -36,12 +36,8 @@ module.exports = {
       let tag = interaction.options.getString("tag") ?? "azur_lane";
       tag = tag.toLowerCase().replace(filter, "");
       const tagList = tag.split(" ");
-      let allowed_tag_amount = MAX_TAGS;
-      if (SFW) {
-        allowed_tag_amount -= 1
-      }
       if (tagList.length > MAX_TAGS) {
-        newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
+        newMsg = TOO_MANY_TAGS_MSG + MAX_TAGS;
       } else if (constainsBadTag(tagList)){
         newMsg = BAD_TAG_MSG;
       } else {

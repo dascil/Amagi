@@ -6,12 +6,23 @@ A personal bot for a discord server.
 
 ## Features
 
+- Recognizes both slash (/) and prefix commands
+
 - Slash Commands
-    - Information commands such as ping
-    - Get image from Danbooru based on input (tags)
-        - Returns list of similar tags if tags does not exist
-        - Tags separated by space (Limit 2)
-    - Get similar tags from Danbooru based on input
+    - Information commands such as bot ping
+    - Fetch command to image board like danbooru and yandere
+        - If tags are invalid, it will return a list of similar tags
+    - Tag command to look up on specified boards
+
+- Prefix Commands
+    - Information commands such as bot ping
+
+- Color-coded console information
+
+- Configurations
+    - Debug mode (default:false) Logs start-up information
+    - SFW mode (default:true) Forces image board commands to only retrieve SFW photos (by image board standards)
+        - Since tags can still be explicit, commands can only be done in NSFW channels.
 
 ## Requirements
 
@@ -23,3 +34,14 @@ A personal bot for a discord server.
 - In the terminal, run `npm install` to download the necessary packages
 - Create a `.env` file and get the necessary values that are in the `.env.example` file
 - In the terminal, run `node .`
+
+## Disclaimer
+
+The SFW configuration only ensures the photos being retreived are safe for work by the image board's guidelines, and are within Discord's terms of service.\
+The tags however, may be NSFW. As such, the image and tag commands will only work on NSFW channels. \
+We are not held responsible for any repercussions caused by using this repo.
+
+## TODO
+
+- Add cooldown system for commands
+- Add filter for suggested tags in SFW mode

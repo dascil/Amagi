@@ -1,0 +1,5 @@
+{
+    "MAX_TAGS" : 2,
+    "NOT_FOUND_PROMISE_RESPONSE" : "That record was not found.",
+    "NSFW_RATINGS" : ["q", "s", "e"]
+}
