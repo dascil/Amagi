@@ -1,4 +1,12 @@
-# Amagi
+<div align="center">
+    <img src="https://cdn.discordapp.com/attachments/1084368581342531655/1096280364235890719/elf-modified.png" width=200px>
+    <h1>Amagi</h1>
+    <div>
+        <img src="https://img.shields.io/github/v/release/zach-dascil/amagi">
+        <img src="https://img.shields.io/badge/discord.js-v14-purple">
+        <img src="https://img.shields.io/github/license/zach-dascil/Amagi">
+    </div>
+</div>
 
 ## Description
 
