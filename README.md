@@ -35,7 +35,7 @@ A personal bot for a discord server.
 ## Requirements
 
 [Node.js](https://nodejs.org/) v18.0.0 or higher \
-[Docker]() v20.10.0 or higher (Optional) 
+[Docker]() v20.10.0 or higher (Optional)
 
 ## Set-up Guide
 
@@ -43,6 +43,11 @@ A personal bot for a discord server.
 - In the terminal, run `npm install` to download the necessary packages
 - Create a `.env` file and get the necessary values that are in the `.env.example` file
 - In the terminal, run `node .`
+- If you want to use Docker:
+  - In the terminal inde docker directory, use the command `docker build . -t {insert-name-here}`
+  - In the same terminal, use the command `docker run {insert-name-here's id}`
+    - If you don't want it to be connected to that specific terminal, add `-d` parameter
+  - To manually stop the server, use the command `docker stop {insert-name-here's container's id}`
 
 ## Disclaimer
 
