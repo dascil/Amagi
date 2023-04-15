@@ -34,7 +34,8 @@ A personal bot for a discord server.
 
 ## Requirements
 
-[Node.js](https://nodejs.org/) v18.0.0 or higher
+[Node.js](https://nodejs.org/) v18.0.0 or higher \
+[Docker]() v20.10.0 or higher (Optional) 
 
 ## Set-up Guide
 
