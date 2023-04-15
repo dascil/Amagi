@@ -1,6 +1,6 @@
 {
   "name": "amagi",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Discord bot for personal server",
   "main": "src/bot.js",
   "scripts": {

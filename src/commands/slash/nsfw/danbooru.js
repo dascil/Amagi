@@ -40,7 +40,7 @@ module.exports = {
       if (SFW) {
         allowed_tag_amount -= 1
       }
-      if (tagList.length > MAX_TAGS) {
+      if (tagList.length > allowed_tag_amount) {
         newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
       } else if (constainsBadTag(tagList)){
         newMsg = BAD_TAG_MSG;
