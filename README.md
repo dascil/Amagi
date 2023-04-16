@@ -25,6 +25,10 @@ A personal bot for a discord server.
 - Prefix Commands
     - Information commands such as bot ping
 
+- Command Cooldown for both prefix and slash commands
+  - Sends reply if command is on cooldown
+  - Message self-deletes after a certain amount of time
+
 - Color-coded console information
 
 - Configurations
