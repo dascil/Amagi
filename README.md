@@ -57,5 +57,12 @@ We are not held responsible for any repercussions caused by using this repo.
 
 ## TODO
 
-- Add cooldown system for commands
-- Add filter for suggested tags in SFW mode
+- More work on SFW mode
+    - Add filter for suggested tags in SFW mode
+    - Option to hide echoes of user response
+
+- For 1.0.0 release
+    - Combine danbooru and yandere commmand together
+        - Similar to tag command
+        - Another command will exist for quick look-up
+    - TypeScript Transition

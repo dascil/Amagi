@@ -16,6 +16,8 @@ const client = new Client({
 // Create collections
 client.slashCommands = new Collection();
 client.prefixCommands = new Collection();
+client.cooldowns = new Collection();
+client.prefixCooldowns = new Collection();
 // Add colors for console messages
 client.debugMode = DEBUG;
 client.success = chalk.green;

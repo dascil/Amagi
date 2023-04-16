@@ -4,11 +4,8 @@ const {
   NOT_IN_A_NSFW_CHANNEL_MSG,
   STANDARD_ERROR_MSG,
   TOO_MANY_TAGS_MSG,
-} = require("./shared/config/fetchErrors.json");
-const { MAX_TAGS } = require("./danbooru/config/danbooruParameters.json");
-const { constainsBadTag } = require("./shared/functions/tagValidation");
-const { getPhoto } = require("./danbooru/functions/getPhotoDanbooru");
-const { SFW } = require("../../../json/config.json")
+} = require("./config/fetchErrors.json");
+const { Danbooru } = require("./functions/danbooruObject");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,29 +20,24 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction, client) {
-    const msg = await interaction.deferReply({
-      fetchReply: false,
-    });
-
+    const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     if (!interaction.channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
-      // Clean up tags
-      const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|]/g;
+      // Check if passed tags are valid
       let tag = interaction.options.getString("tag") ?? "azur_lane";
-      tag = tag.toLowerCase().replace(filter, "");
-      const tagList = tag.split(" ");
-      let allowed_tag_amount = MAX_TAGS;
-      if (SFW) {
-        allowed_tag_amount -= 1
+      let d = new Danbooru(tag)
+      let allowed_tag_amount = d.max_tags;
+      if (d.sfw) {
+        allowed_tag_amount -= 1;
       }
-      if (tagList.length > allowed_tag_amount) {
+      if (d.tagList.length > allowed_tag_amount) {
         newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
-      } else if (constainsBadTag(tagList)){
+      } else if (d.constainsBadTag()){
         newMsg = BAD_TAG_MSG;
       } else {
-        newMsg = await getPhoto(tag, tagList, SFW);
+        newMsg = await d.getPhoto();
       }
     }
     // Sends reply to user

@@ -1,13 +1,13 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { BLACKLIST } = require("./shared/config/fetchConfig.json");
-const { tagSuggestorDanbooru } = require("./danbooru/functions/tagSuggestionDanbooru");
-const { tagSuggestorYandere } = require("./yandere/functions/tagSuggestionYandere");
-const { handleError } = require("./shared/functions/handleError");
+const { FETCH_PARAMETERS } = require("../../../json/config.json");
+const { Danbooru } = require("./functions/danbooruObject");
+const { Yandere } = require("./functions/yandereObject");
+const { handleError } = require("./functions/handleError");
 const {
   BAD_TAG_MSG,
   NOT_IN_A_NSFW_CHANNEL_MSG,
   STANDARD_ERROR_MSG,
-} = require("./shared/config/fetchErrors.json");
+} = require("./config/fetchErrors.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,9 +23,7 @@ module.exports = {
       .setRequired(true)
       .addChoices({name: 'Danbooru', value: "danbooru"},{name: "Yandere", value: "yandere"})),
   async execute(interaction, client) {
-    const msg = await interaction.deferReply({
-      fetchReply: false,
-    });
+    const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;
 
@@ -38,14 +36,16 @@ module.exports = {
       const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|\s]/g;
       tag = tag.replace(filter, "").toLowerCase();
       // Catch unsearchable tags
-      if (BLACKLIST.includes(tag)) {
+      if (FETCH_PARAMETERS.BLACKLIST.includes(tag)) {
         newMsg = BAD_TAG_MSG;
       } else {
         try {
           if (board === "danbooru") {
-            newMsg = await tagSuggestorDanbooru(tag);
+            let d = new Danbooru(tag);
+            newMsg = await d.getTagSuggestions(d.tag);
           } else {
-            newMsg = await tagSuggestorYandere(tag);
+            let y = new Yandere(tag)
+            newMsg = await y.getTagSuggestions(y.tag);
           // Logs any error that occured
           }
         } catch (error) {
