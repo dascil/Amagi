@@ -51,5 +51,4 @@ We are not held responsible for any repercussions caused by using this repo.
 
 ## TODO
 
-- Add cooldown system for commands
 - Add filter for suggested tags in SFW mode

@@ -23,9 +23,7 @@ module.exports = {
       .setRequired(true)
       .addChoices({name: 'Danbooru', value: "danbooru"},{name: "Yandere", value: "yandere"})),
   async execute(interaction, client) {
-    const msg = await interaction.deferReply({
-      fetchReply: false,
-    });
+    const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;
 

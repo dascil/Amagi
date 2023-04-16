@@ -20,9 +20,7 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction, client) {
-    const msg = await interaction.deferReply({
-      fetchReply: false,
-    });
+    const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     if (!interaction.channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
