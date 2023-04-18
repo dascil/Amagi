@@ -34,7 +34,7 @@ module.exports = {
       }
       if (d.tagList.length > allowed_tag_amount) {
         newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
-      } else if (d.constainsBadTag()){
+      } else if (d.containsBadTag(d.tagList)){
         newMsg = BAD_TAG_MSG;
       } else {
         newMsg = await d.getPhoto();

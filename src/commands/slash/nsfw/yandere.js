@@ -31,7 +31,7 @@ module.exports = {
       const y = new Yandere(tag);
       if (y.tagList.length > y.max_tags) {
         newMsg = TOO_MANY_TAGS_MSG + y.max_tags;
-      } else if (y.constainsBadTag()){
+      } else if (y.containsBadTag(y.tagList)){
         newMsg = BAD_TAG_MSG;
       } else {
         newMsg = await y.getPhoto();

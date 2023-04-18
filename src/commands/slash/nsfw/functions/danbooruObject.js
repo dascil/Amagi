@@ -91,7 +91,7 @@ class Danbooru extends FetchObject {
    * @returns {Promise<String>} A message containing the similar tags or a message stating no similar tags found
    */
   async getTagSuggestions(tag) {
-    let url = `https://danbooru.donmai.us/autocomplete?search[query]=${tag}&search[type]=tag_query&limit=10`;
+    let url = `https://danbooru.donmai.us/autocomplete?search[query]=${tag}&search[type]=tag_query&limit=20`;
     // Fetch request Danbooru API
     let jsonObj = await fetch(url);
     // Catch error during fetch request
@@ -103,6 +103,7 @@ class Danbooru extends FetchObject {
     const $ = cheerio.load(jsonObj);
     const tagList = $("li");
     let goodTags = [];
+    let goodTagsCount = 0;
     // Find and filter potential tags
     for (let i = 0; i < tagList.length; i++) {
       const potentialTag = tagList[i].attribs["data-autocomplete-value"];
@@ -110,7 +111,18 @@ class Danbooru extends FetchObject {
         potentialTag.includes(tag) &&
         !this.blacklist.includes(potentialTag)
       ) {
+        // Filter out nsfw tags
+        if (this.sfw) {
+          let tempTagList = tag.split("_");
+          if (this.containsBadTag(tempTagList)) {
+            continue;
+          }
+        }
         goodTags.push("`" + potentialTag + "`");
+        goodTagsCount += 1;
+        if (goodTagsCount === 10) {
+          break;
+        }
       }
     }
     // Returns list of tags or message if no tags are found
@@ -163,10 +175,11 @@ class Danbooru extends FetchObject {
 
   /**
    * Checks if array of tags contain a blacklisted tag
+   * @param {Array} tagList List of user inputted tags
    * @returns {Boolean} True if a blacklisted tag is found
    */
-  constainsBadTag() {
-    return super.constainsBadTag();
+  containsBadTag(tagList) {
+    return super.containsBadTag(tagList);
   }
 
   /**

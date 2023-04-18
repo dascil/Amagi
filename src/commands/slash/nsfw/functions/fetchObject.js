@@ -5,6 +5,7 @@ const { SFW, FETCH_PARAMETERS } = require("../../../../json/config.json");
  */
 class FetchObject {
   sfw = SFW;
+  sfwFilter = ["sex", "ass"]
   nsfw_ratings = ["q", "e"];
   blacklist = FETCH_PARAMETERS.BLACKLIST;
   max_tags = FETCH_PARAMETERS.MAX_TAGS;
@@ -30,6 +31,9 @@ class FetchObject {
     const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|]/g;
     this.tag = tag.toLowerCase().replace(filter, "");
     this.tagList = tag.split(" ");
+    if (this.sfw) {
+      this.blacklist = this.blacklist.concat(this.sfwFilter);
+    }
   }
 
   /**
@@ -108,9 +112,9 @@ class FetchObject {
    * @param {Array} tagList List of user inputted tags
    * @returns {Boolean} True if a blacklisted tag is found
    */
-  constainsBadTag() {
+  containsBadTag(tagList) {
     return (
-      this.tagList.filter((tag) => this.blacklist.includes(tag)).length !== 0
+      tagList.filter((tag) => this.blacklist.includes(tag)).length !== 0
     );
   }
 

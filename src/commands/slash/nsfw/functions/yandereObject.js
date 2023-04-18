@@ -20,7 +20,10 @@ class Yandere extends FetchObject {
     if (this.sfw) {
       sfwTag = "rating:s ";
     }
-    let url = "https://yande.re/post.json?limit=1&tags=order:random+" + sfwTag + this.tag;
+    let url =
+      "https://yande.re/post.json?limit=1&tags=order:random+" +
+      sfwTag +
+      this.tag;
     // If fetch requests fails due to bad image,
     // it will retry a set amount of times
     let interval = 0;
@@ -42,10 +45,12 @@ class Yandere extends FetchObject {
             message = this.INVALID_TAG_PARTIAL_MESSAGE;
             // Get suggested tags
             for (let i = 0; i < this.tagList.length; i++) {
-              message += (await this.getTagSuggestions(this.tagList[i])) + "\n\n";
+              message +=
+                (await this.getTagSuggestions(this.tagList[i])) + "\n\n";
             }
             if (this.sfw) {
-              message += "The chosen tags may also not have appropriate photos for safe mode.\n"
+              message +=
+                "The chosen tags may also not have appropriate photos for safe mode.\n";
             }
             validTag = false;
             // Danbooru site error
@@ -95,6 +100,13 @@ class Yandere extends FetchObject {
     for (let i = 0; i < jsonObj.length; i++) {
       const potentialTag = jsonObj[i]["name"];
       if (!this.blacklist.includes(potentialTag)) {
+        // Filter out nsfw tags
+        if (this.sfw) {
+          let tempTagList = tag.split("_");
+          if (this.containsBadTag(tempTagList)) {
+            continue;
+          }
+        }
         goodTags.push("`" + potentialTag + "`");
       }
     }
@@ -102,7 +114,9 @@ class Yandere extends FetchObject {
     if (goodTags.length === 0) {
       return `**${tag}** does not exist. Remove some letters/symbols and try again.`;
     } else {
-      return `These are some tags similar to **${tag}**:\n` + goodTags.join("\n");
+      return (
+        `These are some tags similar to **${tag}**:\n` + goodTags.join("\n")
+      );
     }
   }
 
@@ -146,10 +160,11 @@ class Yandere extends FetchObject {
 
   /**
    * Checks if array of tags contain a blacklisted tag
+   * @param {Array} tagList List of user inputted tags
    * @returns {Boolean} True if a blacklisted tag is found
    */
-  constainsBadTag() {
-    return super.constainsBadTag();
+  containsBadTag(tagList) {
+    return super.containsBadTag(tagList);
   }
 
   /**
@@ -162,5 +177,5 @@ class Yandere extends FetchObject {
 }
 
 module.exports = {
-  Yandere:Yandere,
+  Yandere: Yandere,
 };
