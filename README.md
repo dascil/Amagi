@@ -63,7 +63,6 @@ We are not held responsible for any repercussions caused by using this repo.
 
 - More work on SFW mode
     - Add filter for suggested tags in SFW mode
-    - Option to hide echoes of user response
 
 - For 1.0.0 release
     - Combine danbooru and yandere commmand together

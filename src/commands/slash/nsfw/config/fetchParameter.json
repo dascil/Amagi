@@ -1,0 +1,6 @@
+{
+    "BLACKLIST":  ["loli", "shota", "cub"],
+    "TAG_FILTER": ["sex", "ass", "butt", "breasts"],
+    "FETCH_RETRIES" : 3,
+    "MAX_TAGS": 3
+}

@@ -86,7 +86,7 @@ class Yandere extends FetchObject {
    * @returns {Promise<String>} A message containing the similar tags or a message stating no similar tags found
    */
   async getTagSuggestions(tag) {
-    let url = `https://yande.re/tag.json?limit=10&name=${tag}*&type=&order=count`;
+    let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
     // Fetch request Danbooru API
     let jsonObj = await fetch(url);
     // Catch error during fetch request
@@ -96,28 +96,40 @@ class Yandere extends FetchObject {
     jsonObj = await jsonObj.json();
     // Parse html page
     let goodTags = [];
+    let goodTagsLength = 0;
     // Find and filter potential tags
     for (let i = 0; i < jsonObj.length; i++) {
       const potentialTag = jsonObj[i]["name"];
-      if (!this.blacklist.includes(potentialTag)) {
-        // Filter out nsfw tags
-        if (this.sfw) {
-          let tempTagList = tag.split("_");
-          if (this.containsBadTag(tempTagList)) {
-            continue;
-          }
-        }
-        goodTags.push("`" + potentialTag + "`");
+      // Filter out nsfw tags
+      let tempTagList = potentialTag.split("_");
+      if (this.containsBadTag(tempTagList)) {
+        continue;
+      }
+      goodTags.push("`" + potentialTag + "`");
+      goodTagsLength++;
+      if (goodTagsLength === 10) {
+        break;
       }
     }
-    // Returns list of tags or message if no tags are found
-    if (goodTags.length === 0) {
-      return `**${tag}** does not exist. Remove some letters/symbols and try again.`;
-    } else {
-      return (
-        `These are some tags similar to **${tag}**:\n` + goodTags.join("\n")
-      );
+    // Change return message based on bot configurations
+    let tagMsg = `**${tag}**`;
+    if (!this.trustUser) {
+      tagMsg = "Tag";
     }
+    let returnMsg = "";
+    if (this.sfw) {
+      returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
+    }
+
+    if (goodTags.length === 0) {
+      returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
+    } else {
+      returnMsg =
+        `These are some tags similar to ${tagMsg.toLowerCase()}:\n` +
+        goodTags.join("\n");
+    }
+
+    return returnMsg;
   }
 
   /**

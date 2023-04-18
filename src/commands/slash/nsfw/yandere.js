@@ -29,8 +29,8 @@ module.exports = {
       // Clean up tags
       let tag = interaction.options.getString("tag") ?? "azur_lane";
       const y = new Yandere(tag);
-      if (y.tagList.length > y.max_tags) {
-        newMsg = TOO_MANY_TAGS_MSG + y.max_tags;
+      if (y.tagList.length > y.maxTags) {
+        newMsg = TOO_MANY_TAGS_MSG + y.maxTags;
       } else if (y.containsBadTag(y.tagList)){
         newMsg = BAD_TAG_MSG;
       } else {

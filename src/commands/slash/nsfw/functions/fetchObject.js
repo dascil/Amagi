@@ -1,15 +1,17 @@
 const chalk = require("chalk");
-const { SFW, FETCH_PARAMETERS } = require("../../../../json/config.json");
+const { SFW, TRUST_USER} = require("../../../../json/config.json");
+const { BLACKLIST, FETCH_RETRIES, MAX_TAGS, TAG_FILTER} = require("../config/fetchParameter.json")
 /**
  * Fetch object for all image board commands
  */
 class FetchObject {
   sfw = SFW;
-  sfwFilter = ["sex", "ass"]
-  nsfw_ratings = ["q", "e"];
-  blacklist = FETCH_PARAMETERS.BLACKLIST;
-  max_tags = FETCH_PARAMETERS.MAX_TAGS;
-  retries = FETCH_PARAMETERS.FETCH_RETRIES;
+  tagFilter = TAG_FILTER
+  trustUser = TRUST_USER;
+  blacklist = BLACKLIST;
+  maxTags = MAX_TAGS;
+  retries = FETCH_RETRIES;
+  nsfwRatings = ["q", "e"];
   errorMsgs = {
     NO_SUITABLE_PHOTO_MSG:
       "Unable to find a suitable photo with that tag.\nPlease try again.",
@@ -31,9 +33,6 @@ class FetchObject {
     const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|]/g;
     this.tag = tag.toLowerCase().replace(filter, "");
     this.tagList = tag.split(" ");
-    if (this.sfw) {
-      this.blacklist = this.blacklist.concat(this.sfwFilter);
-    }
   }
 
   /**
@@ -96,7 +95,7 @@ class FetchObject {
    */
   allowedPhoto(imageObj) {
     // Catches photos not allowed
-    if (this.nsfw_ratings.includes(imageObj.rating)) {
+    if (this.nsfwRatings.includes(imageObj.rating)) {
       let tagList = imageObj.tags.split(" ");
       tagList.forEach((tag) => {
         if (this.blacklist.includes(tag)) {
@@ -113,9 +112,13 @@ class FetchObject {
    * @returns {Boolean} True if a blacklisted tag is found
    */
   containsBadTag(tagList) {
-    return (
-      tagList.filter((tag) => this.blacklist.includes(tag)).length !== 0
-    );
+      let filteredBlacklistTags =  tagList.filter((tag) => this.blacklist.includes(tag));
+      if (!this.sfw) {
+        return filteredBlacklistTags.length !== 0;
+      }
+      let filteredNsfwTags = tagList.filter((tag) => this.tagFilter.includes(tag));
+
+      return filteredBlacklistTags.length + filteredNsfwTags.length !== 0;
   }
 
   /**

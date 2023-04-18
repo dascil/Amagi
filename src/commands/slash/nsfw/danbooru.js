@@ -28,7 +28,7 @@ module.exports = {
       // Check if passed tags are valid
       let tag = interaction.options.getString("tag") ?? "azur_lane";
       let d = new Danbooru(tag)
-      let allowed_tag_amount = d.max_tags;
+      let allowed_tag_amount = d.maxTags;
       if (d.sfw) {
         allowed_tag_amount -= 1;
       }

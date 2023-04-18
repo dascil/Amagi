@@ -9,8 +9,8 @@ class Danbooru extends FetchObject {
    */
   constructor(tag) {
     super(tag);
-    this.max_tags = 2;
-    this.nsfw_ratings = ["q", "s", "e"];
+    this.maxTags = 2;
+    this.nsfwRatings = ["q", "s", "e"];
   }
 
   /**
@@ -107,16 +107,11 @@ class Danbooru extends FetchObject {
     // Find and filter potential tags
     for (let i = 0; i < tagList.length; i++) {
       const potentialTag = tagList[i].attribs["data-autocomplete-value"];
-      if (
-        potentialTag.includes(tag) &&
-        !this.blacklist.includes(potentialTag)
-      ) {
-        // Filter out nsfw tags
-        if (this.sfw) {
-          let tempTagList = tag.split("_");
-          if (this.containsBadTag(tempTagList)) {
-            continue;
-          }
+      if (potentialTag.includes(tag)) {
+        // Filter out undesireable tags
+        let tempTagList = potentialTag.split("_");
+        if (this.containsBadTag(tempTagList)) {
+          continue;
         }
         goodTags.push("`" + potentialTag + "`");
         goodTagsCount += 1;
@@ -125,14 +120,23 @@ class Danbooru extends FetchObject {
         }
       }
     }
-    // Returns list of tags or message if no tags are found
-    if (goodTags.length === 0) {
-      return `**${tag}** does not exist. Remove some letters/symbols and try again.`;
-    } else {
-      return (
-        `These are some tags similar to **${tag}**:\n` + goodTags.join("\n")
-      );
+    // Change return message based on bot configurations
+    let tagMsg = `**${tag}**`;
+    if (!this.trustUser) {
+      tagMsg = "Tag";
     }
+    let returnMsg = "";
+    if (this.sfw) {
+      returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
+    }
+
+    if (goodTags.length === 0) {
+      returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
+    } else {
+      returnMsg = `These are some tags similar to ${tagMsg.toLowerCase()}:\n` + goodTags.join("\n");
+    }
+
+    return returnMsg
   }
 
   /**

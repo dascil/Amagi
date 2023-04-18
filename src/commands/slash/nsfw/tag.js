@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { FETCH_PARAMETERS } = require("../../../json/config.json");
+const { BLACKLIST } = require("./config/fetchParameter.json");
 const { Danbooru } = require("./functions/danbooruObject");
 const { Yandere } = require("./functions/yandereObject");
 const { handleError } = require("./functions/handleError");
@@ -36,7 +36,7 @@ module.exports = {
       const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|\s]/g;
       tag = tag.replace(filter, "").toLowerCase();
       // Catch unsearchable tags
-      if (FETCH_PARAMETERS.BLACKLIST.includes(tag)) {
+      if (BLACKLIST.includes(tag)) {
         newMsg = BAD_TAG_MSG;
       } else {
         try {
