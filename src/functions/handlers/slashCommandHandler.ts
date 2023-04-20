@@ -1,15 +1,16 @@
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord.js");
-const { readdirSync } = require("fs");
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord.js";
+import { readdirSync } from "fs";
 require("dotenv").config();
 
-const guild_id = process.env["GUILD_ID"];
-const client_id = process.env["CLIENT_ID"];
-const token = process.env["TOKEN"];
+const guild_id: string = process.env["GUILD_ID"]!;
+const client_id: string = process.env["CLIENT_ID"]!;
+const token: string = process.env["TOKEN"]!;
 
-module.exports = async (client) => {
+module.exports = async (client: AmagiClient) => {
   try {
-    commandArray = [];
+    let commandArray: Object[] = [];
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + "Begin loading slash commands...");
     }
@@ -37,20 +38,16 @@ module.exports = async (client) => {
     const rest = new REST({ version: "10" }).setToken(token);
 
     // Pass commands into server
-    rest
-      .put(Routes.applicationGuildCommands(clientID, guildID), {
-        body: commandArray,
-      })
-      .then(
-        console.log(
-          client.success("SUCCESS: ") +
-            "Successfully loaded slash commands."
-        )
-      );
+    await rest.put(Routes.applicationGuildCommands(clientID, guildID), {
+      body: commandArray,
+    })
+
+    console.log(client.success("SUCCESS: ") + "Successfully loaded slash commands.");
+
   } catch (error) {
     console.log(
       client.failure("ERROR: ") +
-        "Failed to load slash commands. See error below."
+      "Failed to load slash commands. See error below."
     );
     console.error(error);
   }
