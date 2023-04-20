@@ -1,10 +1,10 @@
-const { InteractionType } = require("discord.js");
-const { Collection } = require("discord.js");
+import { Interaction, Collection } from "discord.js";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 
-module.exports = {
+export default {
   name: "interactionCreate",
   once: false,
-  async execute(interaction, client) {
+  async execute(interaction: Interaction, client: AmagiClient) {
     const { cooldowns } = client;
 
     if (interaction.isChatInputCommand()) {
@@ -22,7 +22,7 @@ module.exports = {
 
       // Get time
       const now = Date.now();
-      const timestamps = cooldowns.get(command.data.name);
+      const timestamps = cooldowns.get(command.data.name)!;
       const defaultCooldownDuration = 5;
       const cooldownAmount =
         (command.cooldown ?? defaultCooldownDuration) * 1000;
@@ -30,7 +30,7 @@ module.exports = {
       // Current cooldown exists for user of that command
       if (timestamps.has(interaction.user.id)) {
         const expirationTime =
-          timestamps.get(interaction.user.id) + cooldownAmount;
+          timestamps.get(interaction.user.id)! + cooldownAmount;
 
         if (now < expirationTime) {
           const expiredTimestamp = Math.round(expirationTime / 1000);
@@ -39,7 +39,7 @@ module.exports = {
             ephemeral: true,
           }).then((reply) => {
             setTimeout(() => reply.delete(), 5000);
-          }).catch((error) => {
+          }).catch((error: Error) => {
             console.error(error);
             interaction.reply("There was an error trying to execute that command!");
           });

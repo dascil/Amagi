@@ -1,13 +1,9 @@
-const { SlashCommandBuilder } = require("discord.js");
-const {
-  BAD_TAG_MSG,
-  NOT_IN_A_NSFW_CHANNEL_MSG,
-  STANDARD_ERROR_MSG,
-  TOO_MANY_TAGS_MSG,
-} = require("./config/fetchErrors.json");
-const { Yandere } = require("./functions/yandereObject");
+import { ChatInputCommandInteraction, Interaction, InteractionResponse, PartialChannelData, SlashCommandBuilder } from "discord.js";
+import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
+import Yandere from "./functions/YandereObject";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 
-module.exports = {
+export default {
   data: new SlashCommandBuilder()
     .setName("yandere")
     .setDescription(
@@ -19,11 +15,12 @@ module.exports = {
         .setDescription("Tag of desired photo")
         .setRequired(false)
     ),
-  async execute(interaction, client) {
+  async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
     const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;
-    if (!interaction.channel.nsfw) {
+    let channel: any = interaction.channel!;
+    if (channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       // Clean up tags

@@ -1,5 +1,7 @@
-const { readdirSync } = require("fs");
-module.exports = async (client) => {
+import { readdirSync } from "fs";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+
+export default async (client: AmagiClient) => {
   try {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + "Begin loading prefix commands...");

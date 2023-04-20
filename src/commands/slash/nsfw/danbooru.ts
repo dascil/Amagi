@@ -1,11 +1,7 @@
-const { SlashCommandBuilder } = require("discord.js");
-const {
-  BAD_TAG_MSG,
-  NOT_IN_A_NSFW_CHANNEL_MSG,
-  STANDARD_ERROR_MSG,
-  TOO_MANY_TAGS_MSG,
-} = require("./config/fetchErrors.json");
-const { Danbooru } = require("./functions/danbooruObject");
+import { SlashCommandBuilder } from "discord.js";
+import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
+import { Danbooru } from "./functions/DanbooruObject";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,7 +15,7 @@ module.exports = {
         .setDescription("Tag of desired photo")
         .setRequired(false)
     ),
-  async execute(interaction, client) {
+  async execute(interaction, client: AmagiClient) {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     if (!interaction.channel.nsfw) {

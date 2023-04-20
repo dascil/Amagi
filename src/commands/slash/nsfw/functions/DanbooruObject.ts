@@ -1,29 +1,32 @@
-const { FetchObject } = require("./fetchObject");
 
-class Yandere extends FetchObject {
+import { load } from "cheerio";
+import FetchObject from "./fetchObject";
+
+export default class Danbooru extends FetchObject {
+  #NOT_FOUND_PROMISE_RESPONSE: string = "That record was not found.";
   /**
    * Constructor for Danbooru object
-   * @param {String} tag Tag sting passed in by the user
+   * @param {string} tag Tag sting passed in by the user
    */
-  constructor(tag) {
+  constructor(tag: string) {
     super(tag);
+    this.maxTags = 2;
+    this.nsfwRatings = ["q", "s", "e"];
   }
 
   /**
    * Get photo from the image board
    * @async
-   * @returns {Promise<String>} Message containing image URL or error message.
+   * @returns {Promise<string>} Message containing image URL or error message.
    */
-  async getPhoto() {
+  async getPhoto(): Promise<string> {
     let message = this.errorMsgs.STANDARD_ERROR_MSG;
-    let sfwTag = "-rating:e";
+    let sfwTag = "";
     if (this.sfw) {
-      sfwTag = "rating:s ";
+      sfwTag = "rating:general ";
     }
     let url =
-      "https://yande.re/post.json?limit=1&tags=order:random+" +
-      sfwTag +
-      this.tag;
+      "https://danbooru.donmai.us/posts/random.json?tags=" + sfwTag + this.tag;
     // If fetch requests fails due to bad image,
     // it will retry a set amount of times
     let interval = 0;
@@ -37,28 +40,31 @@ class Yandere extends FetchObject {
         // If error during fetch request
         if (!jsonObj.ok) {
           message = this.errorMsgs.SITE_UNREACHABLE_MSG;
-          throw new Error(await jsonObj.text());
-        } else {
-          jsonObj = await jsonObj.json();
-          // Tag does not exist
-          if (jsonObj.length === 0) {
+          let error = await jsonObj.json();
+          // Invalid tag present
+          if (
+            error.hasOwnProperty("message") &&
+            error.message === this.#NOT_FOUND_PROMISE_RESPONSE
+          ) {
             message = this.INVALID_TAG_PARTIAL_MESSAGE;
             // Get suggested tags
             for (let i = 0; i < this.tagList.length; i++) {
-              message +=
-                (await this.getTagSuggestions(this.tagList[i])) + "\n\n";
-            }
-            if (this.sfw) {
-              message +=
-                "The chosen tags may also not have appropriate photos for safe mode.\n";
+              message += (await this.getTagSuggestions(this.tagList[i])) + "\n\n";
             }
             validTag = false;
             // Danbooru site error
           } else {
-            // Valid photo found with correct format
-            jsonObj = jsonObj[0];
-            photoFound = this.photoValidation(jsonObj);
+            if (this.sfw) {
+              message +=
+                "\nSome of your chosen tags might not be compatible for safe mode.";
+            }
+            console.log(error);
+            throw new Error("Bad status from danbooru");
           }
+        } else {
+          jsonObj = await jsonObj.json();
+          // Valid photo found with correct format
+          photoFound = this.photoValidation(jsonObj);
         }
         interval++;
       } while (interval < this.retries && validTag && !photoFound);
@@ -72,7 +78,7 @@ class Yandere extends FetchObject {
         }
       }
     } catch (error) {
-      handleError(error);
+      this.handleError(error);
       // Sends reply to user
     } finally {
       return message;
@@ -82,33 +88,37 @@ class Yandere extends FetchObject {
   /**
    * Gets a list of similar tags if any and puts them into a String
    * @async
-   * @param {String} tag Tag string to look up
-   * @returns {Promise<String>} A message containing the similar tags or a message stating no similar tags found
+   * @param {string} tag Tag string to look up
+   * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
-  async getTagSuggestions(tag) {
-    let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
+  async getTagSuggestions(tag: string): Promise<string> {
+    let url = `https://danbooru.donmai.us/autocomplete?search[query]=${tag}&search[type]=tag_query&limit=20`;
     // Fetch request Danbooru API
-    let jsonObj = await fetch(url);
+    const jsonObj = await fetch(url);
     // Catch error during fetch request
     if (!jsonObj.ok) {
       throw new Error("Error getting tags.");
     }
-    jsonObj = await jsonObj.json();
+    const html = await jsonObj.text();
     // Parse html page
+    const $ = load(html);
+    const tagList = $("li");
     let goodTags = [];
-    let goodTagsLength = 0;
+    let goodTagsCount = 0;
     // Find and filter potential tags
-    for (let i = 0; i < jsonObj.length; i++) {
-      const potentialTag = jsonObj[i]["name"];
-      // Filter out nsfw tags
-      let tempTagList = potentialTag.split("_");
-      if (this.containsBadTag(tempTagList)) {
-        continue;
-      }
-      goodTags.push("`" + potentialTag + "`");
-      goodTagsLength++;
-      if (goodTagsLength === 10) {
-        break;
+    for (let i = 0; i < tagList.length; i++) {
+      const potentialTag = tagList[i].attribs["data-autocomplete-value"];
+      if (potentialTag.includes(tag)) {
+        // Filter out undesireable tags
+        let tempTagList = potentialTag.split("_");
+        if (this.containsBadTag(tempTagList)) {
+          continue;
+        }
+        goodTags.push("`" + potentialTag + "`");
+        goodTagsCount += 1;
+        if (goodTagsCount === 10) {
+          break;
+        }
       }
     }
     // Change return message based on bot configurations
@@ -124,21 +134,19 @@ class Yandere extends FetchObject {
     if (goodTags.length === 0) {
       returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
     } else {
-      returnMsg =
-        `These are some tags similar to ${tagMsg.toLowerCase()}:\n` +
-        goodTags.join("\n");
+      returnMsg = `These are some tags similar to ${tagMsg.toLowerCase()}:\n` + goodTags.join("\n");
     }
 
-    return returnMsg;
+    return returnMsg
   }
 
   /**
    * Checks if photo is valid for posting
-   * @param {Object} imageObj JSON object returned from image board
-   * @returns {Boolean} Returns True if photo is valid to post
+   * @param {DanbooruImageObject} imageObj JSON object returned from image board
+   * @returns {boolean} Returns True if photo is valid to post
    */
   photoValidation(imageObj) {
-    return super.photoValidation(imageObj) && this.allowedPhoto(imageObj);
+    return super.photoValidation(imageObj);
   }
 
   /**
@@ -172,22 +180,18 @@ class Yandere extends FetchObject {
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array} tagList List of user inputted tags
-   * @returns {Boolean} True if a blacklisted tag is found
+   * @param {Array<string>} tagList List of user inputted tags
+   * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList) {
+  containsBadTag(tagList: string[]): boolean {
     return super.containsBadTag(tagList);
   }
 
   /**
    * Logs information about error to console
-   * @param {String} error Text from error
+   * @param {any} error Text from error
    */
-  handleError(error) {
+  handleError(error:any) {
     super.handleError(error);
   }
 }
-
-module.exports = {
-  Yandere: Yandere,
-};

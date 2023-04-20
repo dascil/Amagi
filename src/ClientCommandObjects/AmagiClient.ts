@@ -1,4 +1,4 @@
-import { Client, Collection, GatewayIntentBits } from "discord.js";
+import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 import chalk, { ChalkInstance } from "chalk";
 import { DEBUG } from "../json/config.json";
 
@@ -7,8 +7,8 @@ class AmagiClient extends Client {
     // Create collections
     public slashCommands: Collection<string, any>;
     public prefixCommands: Collection<string, any>;
-    public cooldowns: Collection<string, Collection<string, Number>>;
-    public prefixCooldowns: Collection<string, Collection<string, Number>>;
+    public cooldowns: Collection<string, Collection<string, number>>;
+    public prefixCooldowns: Collection<string, Collection<string, number>>;
     // Add colors for console messages
     public success: ChalkInstance;
     public warning: ChalkInstance;
@@ -25,6 +25,8 @@ class AmagiClient extends Client {
                 GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.MessageContent,
             ],
+
+            partials: [Partials.Channel]
         });
         this.debugMode = DEBUG;
         this.success = chalk.green;

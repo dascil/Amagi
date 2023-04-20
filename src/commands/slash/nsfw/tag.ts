@@ -1,13 +1,10 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { BLACKLIST } = require("./config/fetchParameter.json");
-const { Danbooru } = require("./functions/danbooruObject");
-const { Yandere } = require("./functions/yandereObject");
-const { handleError } = require("./functions/handleError");
-const {
-  BAD_TAG_MSG,
-  NOT_IN_A_NSFW_CHANNEL_MSG,
-  STANDARD_ERROR_MSG,
-} = require("./config/fetchErrors.json");
+import { SlashCommandBuilder } from "discord.js";
+import { BLACKLIST } from "./config/fetchParameter.json";
+import { Danbooru } from "./functions/DanbooruObject";
+import { Yandere } from "./functions/YandereObject";
+import { handleError } from "./functions/handleError";
+import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG } from "./config/fetchErrors.json";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,7 +19,7 @@ module.exports = {
       .setDescription("Board to look tag up on")
       .setRequired(true)
       .addChoices({name: 'Danbooru', value: "danbooru"},{name: "Yandere", value: "yandere"})),
-  async execute(interaction, client) {
+  async execute(interaction, client: AmagiClient) {
     const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;

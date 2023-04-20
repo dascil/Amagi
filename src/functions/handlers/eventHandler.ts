@@ -1,6 +1,7 @@
-const { readdirSync } = require("fs");
+import { readdirSync } from "fs";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 
-module.exports = (client) => {
+export default (client: AmagiClient) => {
   try {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + `Begin loading events...`);

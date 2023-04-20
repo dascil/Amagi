@@ -8,7 +8,7 @@ const guild_id: string = process.env["GUILD_ID"]!;
 const client_id: string = process.env["CLIENT_ID"]!;
 const token: string = process.env["TOKEN"]!;
 
-module.exports = async (client: AmagiClient) => {
+export default async (client: AmagiClient) => {
   try {
     let commandArray: Object[] = [];
     if (client.debugMode) {
