@@ -1,5 +1,6 @@
 import chalk from "chalk";
 
+
 /**
  * Logs information about error to console
  * @param {any} error Text from error

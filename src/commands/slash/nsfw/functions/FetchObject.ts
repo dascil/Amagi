@@ -1,6 +1,7 @@
-import chalk from "chalk";
 import { SFW, TRUST_USER } from "../../../../json/config.json";
 import { BLACKLIST, FETCH_RETRIES, MAX_TAGS, TAG_FILTER } from "../config/fetchParameter.json";
+import chalk = require("chalk");
+
 /**
  * Fetch object for all image board commands
  */
