@@ -1,7 +1,7 @@
-import { SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
-import { Danbooru } from "./functions/DanbooruObject";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../../objects/AmagiClient";
+import Danbooru from "./functions/DanbooruObject";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,10 +15,11 @@ module.exports = {
         .setDescription("Tag of desired photo")
         .setRequired(false)
     ),
-  async execute(interaction, client: AmagiClient) {
+  async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
-    if (!interaction.channel.nsfw) {
+    let channel: any = interaction.channel;
+    if (channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       // Check if passed tags are valid

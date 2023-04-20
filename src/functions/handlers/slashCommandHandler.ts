@@ -1,4 +1,4 @@
-import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../objects/AmagiClient";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord.js";
 import { readdirSync } from "fs";

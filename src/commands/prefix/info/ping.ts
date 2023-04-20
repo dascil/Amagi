@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../../objects/AmagiClient";
 
 export default {
 	name: "ping",

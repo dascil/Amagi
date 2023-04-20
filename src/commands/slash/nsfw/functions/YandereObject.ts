@@ -1,4 +1,4 @@
-import FetchObject from "./fetchObject";
+import FetchObject from "./FetchObject";
 
 export default class Yandere extends FetchObject {
   /**

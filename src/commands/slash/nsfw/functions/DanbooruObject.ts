@@ -1,6 +1,6 @@
 
 import { load } from "cheerio";
-import FetchObject from "./fetchObject";
+import FetchObject from "./FetchObject";
 
 export default class Danbooru extends FetchObject {
   #NOT_FOUND_PROMISE_RESPONSE: string = "That record was not found.";
@@ -145,7 +145,7 @@ export default class Danbooru extends FetchObject {
    * @param {DanbooruImageObject} imageObj JSON object returned from image board
    * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj) {
+  photoValidation(imageObj: DanbooruImageObject): boolean {
     return super.photoValidation(imageObj);
   }
 
@@ -153,29 +153,38 @@ export default class Danbooru extends FetchObject {
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {Object} imageObj JSON object returned from image board
+   * @param {DanbooruImageObject} imageObj JSON object returned from image board
    * @returns {Boolean} True if a valid image link
    */
-  goodPhoto(imageObj) {
+  goodPhoto(imageObj: DanbooruImageObject): boolean {
     return super.goodPhoto(imageObj);
   }
 
   /**
    * Checks if photo is small enough for Discord
-   * @param {Object} imageObj JSON object of the image
+   * @param {DanbooruImageObject} imageObj JSON object of the image
    * @returns {Boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj) {
+  rightSizePhoto(imageObj: DanbooruImageObject): boolean {
     return super.rightSizePhoto(imageObj);
   }
 
   /**
    * A function to catch disallowed content on server
-   * @param {Object} imageObj JSON object returned from Yandere
+   * @param {DanbooruImageObject} imageObj JSON object returned from Yandere
    * @returns {Boolean} True if photo is allowed
    */
-  allowedPhoto(imageObj) {
-    return super.allowedPhoto(imageObj);
+  allowedPhoto(imageObj: DanbooruImageObject): boolean {
+    // Catches photos not allowed
+    if (this.nsfwRatings.includes(imageObj.rating)) {
+      let tagList = imageObj.tag_string.split(" ");
+      tagList.forEach((tag: string) => {
+        if (this.blacklist.includes(tag)) {
+          return false;
+        }
+      });
+    }
+    return true;
   }
 
   /**
@@ -191,7 +200,7 @@ export default class Danbooru extends FetchObject {
    * Logs information about error to console
    * @param {any} error Text from error
    */
-  handleError(error:any) {
+  handleError(error: any) {
     super.handleError(error);
   }
 }

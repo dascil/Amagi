@@ -1,10 +1,10 @@
-import { SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BLACKLIST } from "./config/fetchParameter.json";
-import { Danbooru } from "./functions/DanbooruObject";
-import { Yandere } from "./functions/YandereObject";
-import { handleError } from "./functions/handleError";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG } from "./config/fetchErrors.json";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../../objects/AmagiClient";
+import Danbooru from "./functions/DanbooruObject";
+import Yandere from "./functions/YandereObject";
+import handleError from "./functions/handleError";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,15 +19,16 @@ module.exports = {
       .setDescription("Board to look tag up on")
       .setRequired(true)
       .addChoices({name: 'Danbooru', value: "danbooru"},{name: "Yandere", value: "yandere"})),
-  async execute(interaction, client: AmagiClient) {
+  async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
     const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;
 
-    if (!interaction.channel.nsfw) {
+    let channel: any = interaction.channel!;
+    if (channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
-      let tag = interaction.options.getString("tag");
+      let tag = interaction.options.getString("tag")!;
       const board = interaction.options.getString("board");
       // Filter out special characters.
       const filter = /[{}<>\[\]/\\+*!?$%&*=~'"`;:|\s]/g;

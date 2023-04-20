@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Interaction, InteractionResponse, PartialChannelData, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
 import Yandere from "./functions/YandereObject";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../../objects/AmagiClient";
 
 export default {
   data: new SlashCommandBuilder()
@@ -19,7 +19,7 @@ export default {
     const msg = await interaction.deferReply();
 
     let newMsg = STANDARD_ERROR_MSG;
-    let channel: any = interaction.channel!;
+    let channel: any = interaction.channel;
     if (channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {

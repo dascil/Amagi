@@ -1,4 +1,4 @@
-import AmagiClient from "./ClientCommandObjects/AmagiClient";
+import AmagiClient from "./objects/AmagiClient";
 import { readdirSync } from "fs";
 require("dotenv").config();
 

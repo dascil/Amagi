@@ -1,2 +1,3 @@
+built/**
 .env
 node_modules

@@ -50,10 +50,10 @@ export default abstract class FetchObject {
 
   /**
    * Checks if photo is valid for posting
-   * @param {StandardImageObject} imageObj JSON object returned from image board
+   * @param {ImageInterface} imageObj JSON object returned from image board
    * @returns {Boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj: StandardImageObject): boolean {
+  photoValidation(imageObj: any): boolean {
     return this.goodPhoto(imageObj) && this.rightSizePhoto(imageObj);
   }
 
@@ -61,10 +61,10 @@ export default abstract class FetchObject {
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {StandardImageObject} imageObj JSON object returned from image board
+   * @param {ImageInterface} imageObj JSON object returned from image board
    * @returns {boolean} True if a valid image link
    */
-  goodPhoto(imageObj: StandardImageObject): boolean {
+  goodPhoto(imageObj: any): boolean {
     return (
       imageObj.hasOwnProperty("file_url") &&
       (imageObj.file_url.endsWith(".png") ||
@@ -75,20 +75,20 @@ export default abstract class FetchObject {
 
   /**
    * Checks if photo is small enough for Discord
-   * @param {StandardImageObject} imageObj JSON object of the image
+   * @param {ImageInterface} imageObj JSON object of the image
    * @returns {boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj: StandardImageObject): boolean {
+  rightSizePhoto(imageObj: any): boolean {
     // Number is equivalent to 10 megabytes
     return imageObj.file_size / 1048576 <= 10;
   }
 
   /**
    * A function to catch disallowed content on server
-   * @param {StandardImageObject} imageObj JSON object returned from Yandere
+   * @param {ImageInterface} imageObj JSON object returned from Yandere
    * @returns {boolean} True if photo is allowed
    */
-  allowedPhoto(imageObj: StandardImageObject): boolean {
+  allowedPhoto(imageObj: any): boolean {
     // Catches photos not allowed
     if (this.nsfwRatings.includes(imageObj.rating)) {
       let tagList = imageObj.tags.split(" ");

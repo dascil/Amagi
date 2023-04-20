@@ -1,16 +1,12 @@
-const chalk = require("chalk");
+import chalk from "chalk";
 
 /**
  * Logs information about error to console
- * @param {String} error Text from error
+ * @param {any} error Text from error
  */
-function handleError(error) {
+export default function handleError(error: any) {
     const time = new Date().toLocaleTimeString();
     console.error(chalk.red("ERROR: ") + error.message);
     console.error(chalk.yellow("TIME OF ERROR: " + time));
     console.error(error);
 }
-
-module.exports = {
-    handleError:handleError
- };
