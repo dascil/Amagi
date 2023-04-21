@@ -68,4 +68,3 @@ We are not held responsible for any repercussions caused by using this repo.
 - For 1.0.0 release
     - Combine danbooru and yandere commmand together
         - Similar to tag command
-        - Another command will exist for quick look-up
