@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Interaction, InteractionResponse, PartialChannelData, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
 import Yandere from "./functions/YandereObject";
 import AmagiClient from "../../../ClientCommandObjects/AmagiClient";

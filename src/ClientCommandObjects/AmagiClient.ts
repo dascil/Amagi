@@ -10,10 +10,10 @@ class AmagiClient extends Client {
     public cooldowns: Collection<string, Collection<string, number>>;
     public prefixCooldowns: Collection<string, Collection<string, number>>;
     // Add colors for console messages
-    public success;
-    public warning;
-    public failure;
-    public debug;
+    public success: chalk.Chalk;
+    public warning: chalk.Chalk;
+    public failure: chalk.Chalk;
+    public debug: chalk.Chalk;
 
     public debugMode: Boolean;
 

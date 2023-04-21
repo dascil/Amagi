@@ -1,4 +1,5 @@
 import FetchObject from "./FetchObject";
+import { EmptySIO } from "./EmptyImageObjects"
 
 export default class Yandere extends FetchObject {
   /**
@@ -29,7 +30,8 @@ export default class Yandere extends FetchObject {
     let interval = 0;
     let validTag = true;
     let photoFound = false;
-    let jsonObj = null;
+    let jsonObj: Response;
+    let photo: StandardImageObject = EmptySIO;
     try {
       do {
         // Fetch request Danbooru API
@@ -41,7 +43,7 @@ export default class Yandere extends FetchObject {
         } else {
           jsonObj = await jsonObj.json();
           // Tag does not exist
-          if (jsonObj.length === 0) {
+          if (jsonObj instanceof Array && jsonObj.length === 0) {
             message = this.INVALID_TAG_PARTIAL_MESSAGE;
             // Get suggested tags
             for (let i = 0; i < this.tagList.length; i++) {
@@ -56,8 +58,10 @@ export default class Yandere extends FetchObject {
             // Danbooru site error
           } else {
             // Valid photo found with correct format
-            jsonObj = jsonObj[0];
-            photoFound = this.photoValidation(jsonObj);
+            if (jsonObj instanceof Array) { // Deal with TypeScript warning
+              photo = jsonObj[0];
+              photoFound = this.photoValidation(photo);
+            }
           }
         }
         interval++;
@@ -68,7 +72,7 @@ export default class Yandere extends FetchObject {
           message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
         } else {
           // Send picture
-          message = jsonObj.file_url;
+          message = photo.file_url;
         }
       }
     } catch (error: any) {
@@ -95,7 +99,7 @@ export default class Yandere extends FetchObject {
     }
     let photoInfo = await jsonObj.json();
     // Parse html page
-    let goodTags = [];
+    let goodTags: Array<string> = [];
     let goodTagsLength = 0;
     // Find and filter potential tags
     for (let i = 0; i < photoInfo.length; i++) {

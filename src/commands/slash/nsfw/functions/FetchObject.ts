@@ -1,6 +1,6 @@
 import { SFW, TRUST_USER } from "../../../../json/config.json";
 import { BLACKLIST, FETCH_RETRIES, MAX_TAGS, TAG_FILTER } from "../config/fetchParameter.json";
-import chalk = require("chalk");
+import chalk from "chalk";
 
 /**
  * Fetch object for all image board commands
@@ -81,7 +81,8 @@ export default abstract class FetchObject {
    */
   rightSizePhoto(imageObj: any): boolean {
     // Number is equivalent to 10 megabytes
-    return imageObj.file_size / 1048576 <= 10;
+    const megabytes = imageObj.file_size / 1048576;
+    return megabytes <= 10 && megabytes > 0;
   }
 
   /**

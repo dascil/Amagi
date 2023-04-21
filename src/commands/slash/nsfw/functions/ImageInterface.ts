@@ -2,7 +2,7 @@ interface StandardImageObject {
     tags: string,
     file_url: string,
     file_size: number,
-    rating: "s" | "q" | "e"
+    rating: "s" | "q" | "e",
 }
 
 interface DanbooruImageObject {
