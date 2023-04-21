@@ -1,8 +1,8 @@
 import { load } from "cheerio";
 import { EmptyDIO } from "./EmptyImageObjects";
-import FetchObject from "./FetchObject";
+import FetchImage from "./FetchImage";
 
-export default class Danbooru extends FetchObject {
+export default class Danbooru extends FetchImage {
   #NOT_FOUND_PROMISE_RESPONSE: string = "That record was not found.";
   /**
    * Constructor for Danbooru object
@@ -94,51 +94,56 @@ export default class Danbooru extends FetchObject {
    */
   async getTagSuggestions(tag: string): Promise<string> {
     let url = `https://danbooru.donmai.us/autocomplete?search[query]=${tag}&search[type]=tag_query&limit=20`;
+    let returnMsg = "There was an error trying to get the tags.";
     // Fetch request Danbooru API
-    const jsonObj = await fetch(url);
-    // Catch error during fetch request
-    if (!jsonObj.ok) {
-      throw new Error("Error getting tags.");
-    }
-    const html = await jsonObj.text();
-    // Parse html page
-    const $ = load(html);
-    const tagList = $("li");
-    let goodTags: Array<string> = [];
-    let goodTagsCount = 0;
-    // Find and filter potential tags
-    for (let i = 0; i < tagList.length; i++) {
-      const potentialTag = tagList[i].attribs["data-autocomplete-value"];
-      if (potentialTag.includes(tag)) {
-        // Filter out undesireable tags
-        let tempTagList = potentialTag.split("_");
-        if (this.containsBadTag(tempTagList)) {
-          continue;
-        }
-        goodTags.push("`" + potentialTag + "`");
-        goodTagsCount += 1;
-        if (goodTagsCount === 10) {
-          break;
+    try {
+      const jsonObj = await fetch(url);
+      // Catch error during fetch request
+      if (!jsonObj.ok) {
+        throw new Error("Error getting tags.");
+      }
+      const html = await jsonObj.text();
+      // Parse html page
+      const $ = load(html);
+      const tagList = $("li");
+      let goodTags: Array<string> = [];
+      let goodTagsCount = 0;
+      // Find and filter potential tags
+      for (let i = 0; i < tagList.length; i++) {
+        const potentialTag = tagList[i].attribs["data-autocomplete-value"];
+        if (potentialTag.includes(tag)) {
+          // Filter out undesireable tags
+          let tempTagList = potentialTag.split("_");
+          if (this.containsBadTag(tempTagList)) {
+            continue;
+          }
+          goodTags.push("`" + potentialTag + "`");
+          goodTagsCount += 1;
+          if (goodTagsCount === 10) {
+            break;
+          }
         }
       }
-    }
-    // Change return message based on bot configurations
-    let tagMsg = `**${tag}**`;
-    if (!this.trustUser) {
-      tagMsg = "Tag";
-    }
-    let returnMsg = "";
-    if (this.sfw) {
-      returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
-    }
+      // Change return message based on bot configurations
+      let tagMsg = `**${tag}**`;
+      if (!this.trustUser) {
+        tagMsg = "Tag";
+      }
 
-    if (goodTags.length === 0) {
-      returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
-    } else {
-      returnMsg = `These are some tags similar to ${tagMsg.toLowerCase()}:\n` + goodTags.join("\n");
-    }
+      returnMsg = "";
+      if (this.sfw) {
+        returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
+      }
 
-    return returnMsg
+      if (goodTags.length === 0) {
+        returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
+      } else {
+        returnMsg = `These are some tags similar to ${tagMsg.toLowerCase()}:\n` + goodTags.join("\n");
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
+    return returnMsg;
   }
 
   /**

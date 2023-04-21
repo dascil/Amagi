@@ -1,7 +1,7 @@
-import FetchObject from "./FetchObject";
+import FetchImage from "./FetchImage";
 import { EmptySIO } from "./EmptyImageObjects"
 
-export default class Yandere extends FetchObject {
+export default class Yandere extends FetchImage {
   /**
    * Constructor for Danbooru object
    * @param {string} tag Tag sting passed in by the user
@@ -91,6 +91,8 @@ export default class Yandere extends FetchObject {
    */
   async getTagSuggestions(tag: string) {
     let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
+    let returnMsg = "There was an error trying to get the tags.";
+    try {
     // Fetch request Danbooru API
     let jsonObj = await fetch(url);
     // Catch error during fetch request
@@ -120,7 +122,7 @@ export default class Yandere extends FetchObject {
     if (!this.trustUser) {
       tagMsg = "Tag";
     }
-    let returnMsg = "";
+    returnMsg = "";
     if (this.sfw) {
       returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
     }
@@ -132,7 +134,9 @@ export default class Yandere extends FetchObject {
         `These are some tags similar to ${tagMsg.toLowerCase()}:\n` +
         goodTags.join("\n");
     }
-
+  } catch (error) {
+    this.handleError(error);
+  }
     return returnMsg;
   }
 

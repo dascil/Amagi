@@ -5,7 +5,7 @@ import chalk from "chalk";
 /**
  * Fetch object for all image board commands
  */
-export default abstract class FetchObject {
+export default abstract class FetchImage {
   sfw: boolean = SFW;
   trustUser: boolean = TRUST_USER;
   tagFilter: Array<string> = TAG_FILTER;
