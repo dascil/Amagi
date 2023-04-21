@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import AmagiClient from "../../../objects/AmagiClient";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 
-export default {
+module.exports = {
 	name: "ping",
     cooldown: 5,
 	description: "Return bot's ping",

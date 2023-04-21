@@ -1,7 +1,7 @@
 import { Interaction, Collection } from "discord.js";
-import AmagiClient from "../../objects/AmagiClient";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 
-export default {
+module.exports = {
   name: "interactionCreate",
   once: false,
   async execute(interaction: Interaction, client: AmagiClient) {

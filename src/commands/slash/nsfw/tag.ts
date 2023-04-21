@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BLACKLIST } from "./config/fetchParameter.json";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG } from "./config/fetchErrors.json";
-import AmagiClient from "../../../objects/AmagiClient";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 import Danbooru from "./functions/DanbooruObject";
 import Yandere from "./functions/YandereObject";
 import handleError from "./functions/handleError";
@@ -25,7 +25,7 @@ module.exports = {
     let newMsg = STANDARD_ERROR_MSG;
 
     let channel: any = interaction.channel!;
-    if (channel.nsfw) {
+    if (!channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       let tag = interaction.options.getString("tag")!;

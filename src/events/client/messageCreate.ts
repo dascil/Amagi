@@ -1,7 +1,8 @@
 require("dotenv").config;
 const prefix = process.env["PREFIX"]!;
 import { Collection, Message } from "discord.js";
-import AmagiClient from "../../objects/AmagiClient";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+
 
 module.exports = {
   name: "messageCreate",

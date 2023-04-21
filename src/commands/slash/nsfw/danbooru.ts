@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
-import AmagiClient from "../../../objects/AmagiClient";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 import Danbooru from "./functions/DanbooruObject";
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     let channel: any = interaction.channel;
-    if (channel.nsfw) {
+    if (!channel.nsfw) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       // Check if passed tags are valid

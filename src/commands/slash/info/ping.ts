@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import AmagiClient from "../../../objects/AmagiClient";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
 import { SlashCommandBuilder } from 'discord.js';
 
-export default {
+module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('Return my ping!'),

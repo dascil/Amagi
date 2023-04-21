@@ -1,7 +1,7 @@
-import AmagiClient from "../../objects/AmagiClient";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 
 
-export default {
+module.exports =  {
     name: 'ready',
     once: true,
     async execute(client: AmagiClient) {

@@ -1,14 +1,14 @@
 import { readdirSync } from "fs";
-import AmagiClient from "../../objects/AmagiClient";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 
-export default (client: AmagiClient) => {
+module.exports = (client: AmagiClient) => {
   try {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + `Begin loading events...`);
     }
-    readdirSync("./src/events").forEach((folder) => {
+    readdirSync("./built/events").forEach((folder) => {
       // Get all event files in event subdirectory
-      const eventFiles = readdirSync(`./src/events/${folder}`).filter((file) =>
+      const eventFiles = readdirSync(`./built/events/${folder}`).filter((file) =>
         file.endsWith(".js")
       );
 

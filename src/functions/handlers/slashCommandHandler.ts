@@ -1,22 +1,22 @@
-import AmagiClient from "../../objects/AmagiClient";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord.js";
 import { readdirSync } from "fs";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
 require("dotenv").config();
 
 const guild_id: string = process.env["GUILD_ID"]!;
 const client_id: string = process.env["CLIENT_ID"]!;
 const token: string = process.env["TOKEN"]!;
 
-export default async (client: AmagiClient) => {
+module.exports = async (client: AmagiClient) => {
   try {
     let commandArray: Object[] = [];
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + "Begin loading slash commands...");
     }
-    readdirSync("./src/commands/slash").forEach((folder) => {
+    readdirSync("./built/commands/slash").forEach((folder) => {
       // Get all slash script files in slash subdirectory
-      const slashFiles = readdirSync(`./src/commands/slash/${folder}`).filter(
+      const slashFiles = readdirSync(`./built/commands/slash/${folder}`).filter(
         (file) => file.endsWith(".js")
       );
 

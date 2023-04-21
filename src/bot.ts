@@ -1,5 +1,5 @@
-import AmagiClient from "./objects/AmagiClient";
 import { readdirSync } from "fs";
+import AmagiClient from "./ClientCommandObjects/AmagiClient";
 require("dotenv").config();
 
 const token: string = process.env['TOKEN']!;
@@ -10,8 +10,8 @@ if (client.debugMode) {
   console.log(client.debug("=== DEBUG MODE ACTIVATED ==="));
 }
 // Get all handler script files and initialize all functions
-readdirSync("./src/functions").forEach((folder) => {
-  const folderFiles = readdirSync(`./src/functions/${folder}`).filter((file) => file.endsWith(".js"));
+readdirSync("./built/functions").forEach((folder) => {
+  const folderFiles = readdirSync(`./built/functions/${folder}`).filter((file) => file.endsWith(".js"));
   folderFiles.forEach((file) => {require(`./functions/${folder}/${file}`)(client);});
 });
 
