@@ -62,9 +62,5 @@ We are not held responsible for any repercussions caused by using this repo.
 
 ## TODO
 
-- More work on SFW mode
-    - Add filter for suggested tags in SFW mode
-
 - For 1.0.0 release
-    - Combine danbooru and yandere commmand together
-        - Similar to tag command
+    - Add filter for suggested tags in SFW mode
