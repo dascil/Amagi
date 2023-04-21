@@ -1,8 +1,11 @@
+import { Message } from "discord.js";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+
 module.exports = {
 	name: "ping",
     cooldown: 5,
 	description: "Return bot's ping",
-	async execute(message, args, client) {
+	async execute(message: Message, args: Array<string>, client: AmagiClient) {
         const newMsg = `Bot Latency: ${client.ws.ping}ms`;
         message.reply({
             content: newMsg,

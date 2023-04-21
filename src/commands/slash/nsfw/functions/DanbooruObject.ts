@@ -1,13 +1,14 @@
-const { FetchObject } = require("./fetchObject");
-const cheerio = require("cheerio");
+import { load } from "cheerio";
+import { EmptyDIO } from "./EmptyImageObjects";
+import FetchObject from "./FetchObject";
 
-class Danbooru extends FetchObject {
-  #NOT_FOUND_PROMISE_RESPONSE = "That record was not found.";
+export default class Danbooru extends FetchObject {
+  #NOT_FOUND_PROMISE_RESPONSE: string = "That record was not found.";
   /**
    * Constructor for Danbooru object
-   * @param {String} tag Tag sting passed in by the user
+   * @param {string} tag Tag sting passed in by the user
    */
-  constructor(tag) {
+  constructor(tag: string) {
     super(tag);
     this.maxTags = 2;
     this.nsfwRatings = ["q", "s", "e"];
@@ -16,9 +17,9 @@ class Danbooru extends FetchObject {
   /**
    * Get photo from the image board
    * @async
-   * @returns {Promise<String>} Message containing image URL or error message.
+   * @returns {Promise<string>} Message containing image URL or error message.
    */
-  async getPhoto() {
+  async getPhoto(): Promise<string> {
     let message = this.errorMsgs.STANDARD_ERROR_MSG;
     let sfwTag = "";
     if (this.sfw) {
@@ -31,7 +32,8 @@ class Danbooru extends FetchObject {
     let interval = 0;
     let validTag = true;
     let photoFound = false;
-    let jsonObj = null;
+    let jsonObj: Response;
+    let photo: DanbooruImageObject = EmptyDIO;
     try {
       do {
         // Fetch request Danbooru API
@@ -61,9 +63,9 @@ class Danbooru extends FetchObject {
             throw new Error("Bad status from danbooru");
           }
         } else {
-          jsonObj = await jsonObj.json();
+          photo = await jsonObj.json();
           // Valid photo found with correct format
-          photoFound = this.photoValidation(jsonObj);
+          photoFound = this.photoValidation(photo);
         }
         interval++;
       } while (interval < this.retries && validTag && !photoFound);
@@ -73,7 +75,7 @@ class Danbooru extends FetchObject {
           message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
         } else {
           // Send picture
-          message = jsonObj.file_url;
+          message = photo.file_url;
         }
       }
     } catch (error) {
@@ -87,22 +89,22 @@ class Danbooru extends FetchObject {
   /**
    * Gets a list of similar tags if any and puts them into a String
    * @async
-   * @param {String} tag Tag string to look up
-   * @returns {Promise<String>} A message containing the similar tags or a message stating no similar tags found
+   * @param {string} tag Tag string to look up
+   * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
-  async getTagSuggestions(tag) {
+  async getTagSuggestions(tag: string): Promise<string> {
     let url = `https://danbooru.donmai.us/autocomplete?search[query]=${tag}&search[type]=tag_query&limit=20`;
     // Fetch request Danbooru API
-    let jsonObj = await fetch(url);
+    const jsonObj = await fetch(url);
     // Catch error during fetch request
     if (!jsonObj.ok) {
       throw new Error("Error getting tags.");
     }
-    jsonObj = await jsonObj.text();
+    const html = await jsonObj.text();
     // Parse html page
-    const $ = cheerio.load(jsonObj);
+    const $ = load(html);
     const tagList = $("li");
-    let goodTags = [];
+    let goodTags: Array<string> = [];
     let goodTagsCount = 0;
     // Find and filter potential tags
     for (let i = 0; i < tagList.length; i++) {
@@ -141,10 +143,10 @@ class Danbooru extends FetchObject {
 
   /**
    * Checks if photo is valid for posting
-   * @param {Object} imageObj JSON object returned from image board
-   * @returns {Boolean} Returns True if photo is valid to post
+   * @param {DanbooruImageObject} imageObj JSON object returned from image board
+   * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj) {
+  photoValidation(imageObj: DanbooruImageObject): boolean {
     return super.photoValidation(imageObj);
   }
 
@@ -152,49 +154,54 @@ class Danbooru extends FetchObject {
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {Object} imageObj JSON object returned from image board
+   * @param {DanbooruImageObject} imageObj JSON object returned from image board
    * @returns {Boolean} True if a valid image link
    */
-  goodPhoto(imageObj) {
+  goodPhoto(imageObj: DanbooruImageObject): boolean {
     return super.goodPhoto(imageObj);
   }
 
   /**
    * Checks if photo is small enough for Discord
-   * @param {Object} imageObj JSON object of the image
+   * @param {DanbooruImageObject} imageObj JSON object of the image
    * @returns {Boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj) {
+  rightSizePhoto(imageObj: DanbooruImageObject): boolean {
     return super.rightSizePhoto(imageObj);
   }
 
   /**
    * A function to catch disallowed content on server
-   * @param {Object} imageObj JSON object returned from Yandere
+   * @param {DanbooruImageObject} imageObj JSON object returned from Yandere
    * @returns {Boolean} True if photo is allowed
    */
-  allowedPhoto(imageObj) {
-    return super.allowedPhoto(imageObj);
+  allowedPhoto(imageObj: DanbooruImageObject): boolean {
+    // Catches photos not allowed
+    if (this.nsfwRatings.includes(imageObj.rating)) {
+      let tagList = imageObj.tag_string.split(" ");
+      tagList.forEach((tag: string) => {
+        if (this.blacklist.includes(tag)) {
+          return false;
+        }
+      });
+    }
+    return true;
   }
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array} tagList List of user inputted tags
-   * @returns {Boolean} True if a blacklisted tag is found
+   * @param {Array<string>} tagList List of user inputted tags
+   * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList) {
+  containsBadTag(tagList: string[]): boolean {
     return super.containsBadTag(tagList);
   }
 
   /**
    * Logs information about error to console
-   * @param {String} error Text from error
+   * @param {any} error Text from error
    */
-  handleError(error) {
+  handleError(error: any) {
     super.handleError(error);
   }
 }
-
-module.exports = {
-  Danbooru: Danbooru,
-};

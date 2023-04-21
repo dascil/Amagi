@@ -1,20 +1,21 @@
-const { FetchObject } = require("./fetchObject");
+import FetchObject from "./FetchObject";
+import { EmptySIO } from "./EmptyImageObjects"
 
-class Yandere extends FetchObject {
+export default class Yandere extends FetchObject {
   /**
    * Constructor for Danbooru object
-   * @param {String} tag Tag sting passed in by the user
+   * @param {string} tag Tag sting passed in by the user
    */
-  constructor(tag) {
+  constructor(tag: string) {
     super(tag);
   }
 
   /**
    * Get photo from the image board
    * @async
-   * @returns {Promise<String>} Message containing image URL or error message.
+   * @returns {Promise<string>} Message containing image URL or error message.
    */
-  async getPhoto() {
+  async getPhoto(): Promise<string> {
     let message = this.errorMsgs.STANDARD_ERROR_MSG;
     let sfwTag = "-rating:e";
     if (this.sfw) {
@@ -29,7 +30,8 @@ class Yandere extends FetchObject {
     let interval = 0;
     let validTag = true;
     let photoFound = false;
-    let jsonObj = null;
+    let jsonObj: Response;
+    let photo: StandardImageObject = EmptySIO;
     try {
       do {
         // Fetch request Danbooru API
@@ -41,7 +43,7 @@ class Yandere extends FetchObject {
         } else {
           jsonObj = await jsonObj.json();
           // Tag does not exist
-          if (jsonObj.length === 0) {
+          if (jsonObj instanceof Array && jsonObj.length === 0) {
             message = this.INVALID_TAG_PARTIAL_MESSAGE;
             // Get suggested tags
             for (let i = 0; i < this.tagList.length; i++) {
@@ -56,8 +58,10 @@ class Yandere extends FetchObject {
             // Danbooru site error
           } else {
             // Valid photo found with correct format
-            jsonObj = jsonObj[0];
-            photoFound = this.photoValidation(jsonObj);
+            if (jsonObj instanceof Array) { // Deal with TypeScript warning
+              photo = jsonObj[0];
+              photoFound = this.photoValidation(photo);
+            }
           }
         }
         interval++;
@@ -68,11 +72,11 @@ class Yandere extends FetchObject {
           message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
         } else {
           // Send picture
-          message = jsonObj.file_url;
+          message = photo.file_url;
         }
       }
-    } catch (error) {
-      handleError(error);
+    } catch (error: any) {
+      this.handleError(error);
       // Sends reply to user
     } finally {
       return message;
@@ -82,10 +86,10 @@ class Yandere extends FetchObject {
   /**
    * Gets a list of similar tags if any and puts them into a String
    * @async
-   * @param {String} tag Tag string to look up
-   * @returns {Promise<String>} A message containing the similar tags or a message stating no similar tags found
+   * @param {string} tag Tag string to look up
+   * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
-  async getTagSuggestions(tag) {
+  async getTagSuggestions(tag: string) {
     let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
     // Fetch request Danbooru API
     let jsonObj = await fetch(url);
@@ -93,13 +97,13 @@ class Yandere extends FetchObject {
     if (!jsonObj.ok) {
       throw new Error("Error getting tags.");
     }
-    jsonObj = await jsonObj.json();
+    let photoInfo = await jsonObj.json();
     // Parse html page
-    let goodTags = [];
+    let goodTags: Array<string> = [];
     let goodTagsLength = 0;
     // Find and filter potential tags
-    for (let i = 0; i < jsonObj.length; i++) {
-      const potentialTag = jsonObj[i]["name"];
+    for (let i = 0; i < photoInfo.length; i++) {
+      const potentialTag = photoInfo[i]["name"];
       // Filter out nsfw tags
       let tempTagList = potentialTag.split("_");
       if (this.containsBadTag(tempTagList)) {
@@ -134,10 +138,10 @@ class Yandere extends FetchObject {
 
   /**
    * Checks if photo is valid for posting
-   * @param {Object} imageObj JSON object returned from image board
-   * @returns {Boolean} Returns True if photo is valid to post
+   * @param {StandardImageObject} imageObj JSON object returned from image board
+   * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj) {
+  photoValidation(imageObj: StandardImageObject) {
     return super.photoValidation(imageObj) && this.allowedPhoto(imageObj);
   }
 
@@ -145,49 +149,45 @@ class Yandere extends FetchObject {
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {Object} imageObj JSON object returned from image board
-   * @returns {Boolean} True if a valid image link
+   * @param {StandardImageObject} imageObj JSON object returned from image board
+   * @returns {boolean} True if a valid image link
    */
-  goodPhoto(imageObj) {
+  goodPhoto(imageObj: StandardImageObject) {
     return super.goodPhoto(imageObj);
   }
 
   /**
    * Checks if photo is small enough for Discord
-   * @param {Object} imageObj JSON object of the image
-   * @returns {Boolean} Returns true if image is small enough in bytes
+   * @param {StandardImageObject} imageObj JSON object of the image
+   * @returns {boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj) {
+  rightSizePhoto(imageObj: StandardImageObject) {
     return super.rightSizePhoto(imageObj);
   }
 
   /**
    * A function to catch disallowed content on server
-   * @param {Object} imageObj JSON object returned from Yandere
-   * @returns {Boolean} True if photo is allowed
+   * @param {StandardImageObject} imageObj JSON object returned from Yandere
+   * @returns {boolean} True if photo is allowed
    */
-  allowedPhoto(imageObj) {
+  allowedPhoto(imageObj: StandardImageObject) {
     return super.allowedPhoto(imageObj);
   }
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array} tagList List of user inputted tags
-   * @returns {Boolean} True if a blacklisted tag is found
+   * @param {Array<string>} tagList List of user inputted tags
+   * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList) {
+  containsBadTag(tagList: Array<string>) {
     return super.containsBadTag(tagList);
   }
 
   /**
    * Logs information about error to console
-   * @param {String} error Text from error
+   * @param {any} error Text from error
    */
-  handleError(error) {
+  handleError(error: any) {
     super.handleError(error);
   }
 }
-
-module.exports = {
-  Yandere: Yandere,
-};

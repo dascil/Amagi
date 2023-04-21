@@ -46,6 +46,7 @@ A personal bot for a discord server.
 - Download or clone the repo
 - In the terminal, run `npm install` to download the necessary packages
 - Create a `.env` file and get the necessary values that are in the `.env.example` file
+- Build the JavaScript files by typing `npx tsc` in the terminal
 - In the terminal, run `node .`
 - If you want to use Docker:
   - In the terminal inde docker directory, use the command `docker build . -t {insert-name-here}`
@@ -67,5 +68,3 @@ We are not held responsible for any repercussions caused by using this repo.
 - For 1.0.0 release
     - Combine danbooru and yandere commmand together
         - Similar to tag command
-        - Another command will exist for quick look-up
-    - TypeScript Transition

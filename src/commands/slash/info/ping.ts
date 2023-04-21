@@ -1,10 +1,12 @@
-const { SlashCommandBuilder } = require('discord.js');
+import { ChatInputCommandInteraction } from "discord.js";
+import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import { SlashCommandBuilder } from 'discord.js';
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('Return my ping!'),
-    async execute(interaction, client) {
+    async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         const msg = await interaction.deferReply({
             fetchReply: true
         });

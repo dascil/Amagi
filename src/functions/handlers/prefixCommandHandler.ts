@@ -1,12 +1,14 @@
-const { readdirSync } = require("fs");
-module.exports = async (client) => {
+import { readdirSync } from "fs";
+import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+
+module.exports = async (client: AmagiClient) => {
   try {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + "Begin loading prefix commands...");
     }
-    readdirSync("./src/commands/prefix").forEach((folder) => {
+    readdirSync("./built/commands/prefix").forEach((folder) => {
       // Get all slash script files in slash subdirectory
-      const prefixFiles = readdirSync(`./src/commands/prefix/${folder}`).filter(
+      const prefixFiles = readdirSync(`./built/commands/prefix/${folder}`).filter(
         (file) => file.endsWith(".js")
       );
 

@@ -2,7 +2,7 @@
   "name": "amagi",
   "version": "0.4.0",
   "description": "Discord bot for personal server",
-  "main": "src/bot.js",
+  "main": "./built/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,14 +11,15 @@
     "bot",
     "alpha"
   ],
-  "author": "Zachary Dascil",
-  "license": "ISC",
+  "author": "Dascil",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/rest": "^1.7.0",
     "chalk": "^4.1.2",
     "cheerio": "^1.0.0-rc.12",
     "discord-api-types": "^0.37.37",
     "discord.js": "^14.9.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "typescript": "^5.0.4"
   }
 }
