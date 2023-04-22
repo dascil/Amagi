@@ -1,5 +1,5 @@
 import { SFW, TRUST_USER } from "../../../../json/config.json";
-import { BLACKLIST, FETCH_RETRIES, MAX_TAGS, TAG_FILTER } from "../config/fetchParameter.json";
+import { BLACKLIST, FETCH_RETRIES, FULL_TAG_FILTER, MAX_TAGS, TAG_FILTER } from "../config/fetchParameter.json";
 import chalk from "chalk";
 
 /**
@@ -8,8 +8,9 @@ import chalk from "chalk";
 export default abstract class FetchImage {
   sfw: boolean = SFW;
   trustUser: boolean = TRUST_USER;
-  tagFilter: Array<string> = TAG_FILTER;
-  blacklist: Array<string> = BLACKLIST;
+  sfwTagFilter: Set<string> = new Set(TAG_FILTER);
+  sfwBlacklist: Set<string> = new Set(FULL_TAG_FILTER);
+  blacklist: Set<string> = new Set(BLACKLIST);
   maxTags: number = MAX_TAGS;
   retries: number = FETCH_RETRIES;
   nsfwRatings: Array<string> = ["q", "e"];
@@ -95,7 +96,7 @@ export default abstract class FetchImage {
     if (this.nsfwRatings.includes(imageObj.rating)) {
       let tagList = imageObj.tags.split(" ");
       tagList.forEach((tag: string) => {
-        if (this.blacklist.includes(tag)) {
+        if (this.blacklist.has(tag)) {
           return false;
         }
       });
@@ -105,18 +106,27 @@ export default abstract class FetchImage {
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array<string>} tagList List of user inputted tags
+   * @param {string} tag Submitted tags
    * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList: Array<string>): boolean {
-      let filteredBlacklistTags =  tagList.filter((tag:string) => this.blacklist.includes(tag));
-      if (!this.sfw) {
-        return filteredBlacklistTags.length !== 0;
-      }
-      let filteredNsfwTags = tagList.filter((tag:string) => this.tagFilter.includes(tag));
-
-      return filteredBlacklistTags.length + filteredNsfwTags.length !== 0;
+  containsBadTag(tag: string): boolean {
+      const tagList = tag.split("_");
+      return tagList.filter((tag:string) => this.blacklist.has(tag)).length !== 0;
   }
+
+  /**
+   * Checks if array of tags contains NSFW tag
+   * @param {string} tag Submitted tags
+   * @returns {boolean} True if a blacklisted tag is found
+   */
+  containsBadTagSFW(tag: string): boolean {
+    if (this.sfwBlacklist.has(tag)) {
+      return true
+    }
+
+    const tagList = tag.split("_");
+    return tagList.filter((tag:string) => this.sfwTagFilter.has(tag)).length !== 0;
+}
 
   /**
    * Logs information about error to console

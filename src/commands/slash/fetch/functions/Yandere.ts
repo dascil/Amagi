@@ -89,7 +89,7 @@ export default class Yandere extends FetchImage {
    * @param {string} tag Tag string to look up
    * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
-  async getTagSuggestions(tag: string) {
+  async getTagSuggestions(tag: string): Promise<string> {
     let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
     let returnMsg = "There was an error trying to get the tags.";
     try {
@@ -107,8 +107,7 @@ export default class Yandere extends FetchImage {
     for (let i = 0; i < photoInfo.length; i++) {
       const potentialTag = photoInfo[i]["name"];
       // Filter out nsfw tags
-      let tempTagList = potentialTag.split("_");
-      if (this.containsBadTag(tempTagList)) {
+      if (this.containsBadTag(potentialTag) || (this.sfw && this.containsBadTagSFW(potentialTag))) {
         continue;
       }
       goodTags.push("`" + potentialTag + "`");
@@ -145,7 +144,7 @@ export default class Yandere extends FetchImage {
    * @param {StandardImageObject} imageObj JSON object returned from image board
    * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj: StandardImageObject) {
+  photoValidation(imageObj: StandardImageObject): boolean {
     return super.photoValidation(imageObj) && this.allowedPhoto(imageObj);
   }
 
@@ -156,7 +155,7 @@ export default class Yandere extends FetchImage {
    * @param {StandardImageObject} imageObj JSON object returned from image board
    * @returns {boolean} True if a valid image link
    */
-  goodPhoto(imageObj: StandardImageObject) {
+  goodPhoto(imageObj: StandardImageObject): boolean {
     return super.goodPhoto(imageObj);
   }
 
@@ -165,7 +164,7 @@ export default class Yandere extends FetchImage {
    * @param {StandardImageObject} imageObj JSON object of the image
    * @returns {boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj: StandardImageObject) {
+  rightSizePhoto(imageObj: StandardImageObject): boolean {
     return super.rightSizePhoto(imageObj);
   }
 
@@ -174,17 +173,26 @@ export default class Yandere extends FetchImage {
    * @param {StandardImageObject} imageObj JSON object returned from Yandere
    * @returns {boolean} True if photo is allowed
    */
-  allowedPhoto(imageObj: StandardImageObject) {
+  allowedPhoto(imageObj: StandardImageObject): boolean {
     return super.allowedPhoto(imageObj);
   }
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array<string>} tagList List of user inputted tags
+   * @param {string} tag Submitted tags
    * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList: Array<string>) {
-    return super.containsBadTag(tagList);
+  containsBadTag(tag: string): boolean {
+    return super.containsBadTag(tag);
+  }
+
+  /**
+   * Checks if array of tags contain a blacklisted tag
+   * @param {string} tag Submitted tags
+   * @returns {boolean} True if a blacklisted tag is found
+   */
+  containsBadTagSFW(tag: string): boolean {
+    return super.containsBadTagSFW(tag);
   }
 
   /**

@@ -1,5 +1,5 @@
 import { readdirSync } from "fs";
-import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../client/AmagiClient";
 
 module.exports = (client: AmagiClient) => {
   try {

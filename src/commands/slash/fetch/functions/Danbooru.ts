@@ -59,7 +59,6 @@ export default class Danbooru extends FetchImage {
               message +=
                 "\nSome of your chosen tags might not be compatible for safe mode.";
             }
-            console.log(error);
             throw new Error("Bad status from danbooru");
           }
         } else {
@@ -113,8 +112,7 @@ export default class Danbooru extends FetchImage {
         const potentialTag = tagList[i].attribs["data-autocomplete-value"];
         if (potentialTag.includes(tag)) {
           // Filter out undesireable tags
-          let tempTagList = potentialTag.split("_");
-          if (this.containsBadTag(tempTagList)) {
+          if (this.containsBadTag(potentialTag) || (this.sfw && this.containsBadTagSFW(potentialTag))) {
             continue;
           }
           goodTags.push("`" + potentialTag + "`");
@@ -185,7 +183,7 @@ export default class Danbooru extends FetchImage {
     if (this.nsfwRatings.includes(imageObj.rating)) {
       let tagList = imageObj.tag_string.split(" ");
       tagList.forEach((tag: string) => {
-        if (this.blacklist.includes(tag)) {
+        if (this.blacklist.has(tag)) {
           return false;
         }
       });
@@ -195,11 +193,20 @@ export default class Danbooru extends FetchImage {
 
   /**
    * Checks if array of tags contain a blacklisted tag
-   * @param {Array<string>} tagList List of user inputted tags
+   * @param {string} tag Submitted tags
    * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tagList: string[]): boolean {
-    return super.containsBadTag(tagList);
+  containsBadTag(tag: string): boolean {
+    return super.containsBadTag(tag);
+  }
+
+  /**
+   * Checks if array of tags contain a blacklisted tag
+   * @param {string} tag Submitted tags
+   * @returns {boolean} True if a blacklisted tag is found
+   */
+  containsBadTagSFW(tag: string): boolean {
+    return super.containsBadTagSFW(tag);
   }
 
   /**

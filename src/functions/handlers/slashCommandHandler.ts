@@ -1,7 +1,7 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord.js";
 import { readdirSync } from "fs";
-import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../client/AmagiClient";
 require("dotenv").config();
 
 const guild_id: string = process.env["GUILD_ID"]!;

@@ -1,4 +1,4 @@
-import AmagiClient from "../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../client/AmagiClient";
 
 
 module.exports =  {

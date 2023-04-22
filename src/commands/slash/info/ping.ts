@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import AmagiClient from "../../../client/AmagiClient";
 import { SlashCommandBuilder } from 'discord.js';
 
 module.exports = {

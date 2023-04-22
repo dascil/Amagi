@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "./config/fetchErrors.json";
-import AmagiClient from "../../../ClientCommandObjects/AmagiClient";
+import { SFW } from "../../../json/config.json";
+import AmagiClient from "../../../client/AmagiClient";
 import Danbooru from "./functions/Danbooru";
 import Yandere from "./functions/Yandere";
 
@@ -28,7 +29,7 @@ module.exports = {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     let channel: any = interaction.channel;
-    if (!channel.nsfw) {
+    if (!channel.nsfw && !SFW) {
       newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
     } else {
       // Checks to see which image board to search
@@ -46,7 +47,7 @@ module.exports = {
         allowed_tag_amount -= 1;
       }
 
-      if (fetchObj.containsBadTag(fetchObj.tagList)) {
+      if (fetchObj.containsBadTag(fetchObj.tag)) {
         newMsg = BAD_TAG_MSG;
       } else if (subcommand === "tag") {
         newMsg = await fetchObj.getTagSuggestions(fetchObj.tagList[0]);
