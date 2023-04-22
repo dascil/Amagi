@@ -1,5 +1,5 @@
 {
-    "BAD_TAG_MSG": "Input contains a tag not allowed on Discord.\nPlease choose another tag.",
+    "BAD_TAG_MSG": "Input contains a tag not allowed.\nPlease choose another tag.",
     "NO_SUITABLE_PHOTO_MSG": "Unable to find a suitable photo with that tag.\nPlease try again.",
     "NOT_IN_A_NSFW_CHANNEL_MSG": "This command can only be used in a NSFW channel.",
     "SITE_UNREACHABLE_MSG": "Unable to retrieve image from site.\nPlease make the site is not down or in maintanence.",

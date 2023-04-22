@@ -46,6 +46,7 @@ A personal bot for a discord server.
 - Download or clone the repo
 - In the terminal, run `npm install` to download the necessary packages
 - Create a `.env` file and get the necessary values that are in the `.env.example` file
+- Build the JavaScript files by typing `npx tsc` in the terminal
 - In the terminal, run `node .`
 - If you want to use Docker:
   - In the terminal inde docker directory, use the command `docker build . -t {insert-name-here}`
@@ -58,15 +59,3 @@ A personal bot for a discord server.
 The SFW configuration only ensures the photos being retreived are safe for work by the image board's guidelines, and are within Discord's terms of service.\
 The tags however, may be NSFW. As such, the image and tag commands will only work on NSFW channels. \
 We are not held responsible for any repercussions caused by using this repo.
-
-## TODO
-
-- More work on SFW mode
-    - Add filter for suggested tags in SFW mode
-    - Option to hide echoes of user response
-
-- For 1.0.0 release
-    - Combine danbooru and yandere commmand together
-        - Similar to tag command
-        - Another command will exist for quick look-up
-    - TypeScript Transition

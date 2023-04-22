@@ -1,9 +1,5 @@
 {
     "DEBUG": false,
     "SFW": true,
-    "FETCH_PARAMETERS": {
-        "BLACKLIST":  ["loli", "shota", "cub"],
-        "FETCH_RETRIES" : 3,
-        "MAX_TAGS": 3
-    }
+    "TRUST_USER": false
 }
