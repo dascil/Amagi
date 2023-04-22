@@ -56,6 +56,6 @@ A personal bot for a discord server.
 
 ## Disclaimer
 
-The SFW configuration only ensures the photos being retreived are safe for work by the image board's guidelines, and are within Discord's terms of service.\
-The tags however, may be NSFW. As such, the image and tag commands will only work on NSFW channels. \
+The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, **not** and are within Discord's terms of service; though, both of their guidelines should overlap well.\
+Our SFW tag filter should be able to catch the majority of the NSFW tags. If you do find a NSFW tag that avoided the filter, please let us know. \
 We are not held responsible for any repercussions caused by using this repo.
