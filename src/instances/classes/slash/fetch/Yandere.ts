@@ -1,5 +1,6 @@
 import FetchImage from "./FetchImage";
-import { EmptySIO } from "./EmptyImageObjects"
+import { EmptySIO } from "../../../objects/slash/fetch/EmptyImageObjects"
+import { StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 export default class Yandere extends FetchImage {
   /**
@@ -75,7 +76,7 @@ export default class Yandere extends FetchImage {
           message = photo.file_url;
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       this.handleError(error);
       // Sends reply to user
     } finally {

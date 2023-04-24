@@ -1,7 +1,7 @@
 require("dotenv").config;
 const prefix = process.env["PREFIX"]!;
 import { Collection, Message } from "discord.js";
-import AmagiClient from "../../client/AmagiClient";
+import AmagiClient from "../../instances/classes/client/AmagiClient";
 
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
     if (!client.prefixCommands.has(command)) {
       return;
     }
-    const commandParams = client.prefixCommands.get(command);
+    const commandParams = client.prefixCommands.get(command)!;
 
     // Checks if command has a cooldown object
     if (!client.prefixCooldowns.has(commandParams.name)) {
@@ -58,7 +58,7 @@ module.exports = {
     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
     try {
-      client.prefixCommands.get(command).execute(message, args, client);
+      client.prefixCommands.get(command)!.execute(message, args, client);
     } catch (error) {
       console.error(error);
       message.reply("There was an error trying to execute that command!");

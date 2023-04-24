@@ -1,6 +1,7 @@
 import { load } from "cheerio";
-import { EmptyDIO } from "./EmptyImageObjects";
+import { EmptyDIO } from "../../../objects/slash/fetch/EmptyImageObjects";
 import FetchImage from "./FetchImage";
+import { DanbooruImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 export default class Danbooru extends FetchImage {
   #NOT_FOUND_PROMISE_RESPONSE: string = "That record was not found.";
@@ -158,7 +159,7 @@ export default class Danbooru extends FetchImage {
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
    * @param {DanbooruImageObject} imageObj JSON object returned from image board
-   * @returns {Boolean} True if a valid image link
+   * @returns {boolean} True if a valid image link
    */
   goodPhoto(imageObj: DanbooruImageObject): boolean {
     return super.goodPhoto(imageObj);
@@ -167,7 +168,7 @@ export default class Danbooru extends FetchImage {
   /**
    * Checks if photo is small enough for Discord
    * @param {DanbooruImageObject} imageObj JSON object of the image
-   * @returns {Boolean} Returns true if image is small enough in bytes
+   * @returns {boolean} Returns true if image is small enough in bytes
    */
   rightSizePhoto(imageObj: DanbooruImageObject): boolean {
     return super.rightSizePhoto(imageObj);
@@ -176,7 +177,7 @@ export default class Danbooru extends FetchImage {
   /**
    * A function to catch disallowed content on server
    * @param {DanbooruImageObject} imageObj JSON object returned from Yandere
-   * @returns {Boolean} True if photo is allowed
+   * @returns {boolean} True if photo is allowed
    */
   allowedPhoto(imageObj: DanbooruImageObject): boolean {
     // Catches photos not allowed

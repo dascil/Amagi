@@ -1,6 +1,7 @@
 import { SFW, TRUST_USER } from "../../../../json/config.json";
-import { BLACKLIST, FETCH_RETRIES, FULL_TAG_FILTER, MAX_TAGS, TAG_FILTER } from "../config/fetchParameter.json";
+import { BLACKLIST, FETCH_RETRIES, FULL_TAG_FILTER, MAX_TAGS, TAG_FILTER } from "../../../../json/slash/fetch/fetchParameter.json"
 import chalk from "chalk";
+import { DanbooruImageObject, StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 /**
  * Fetch object for all image board commands
@@ -52,10 +53,10 @@ export default abstract class FetchImage {
 
   /**
    * Checks if photo is valid for posting
-   * @param {ImageInterface} imageObj JSON object returned from image board
-   * @returns {Boolean} Returns True if photo is valid to post
+   * @param {StandardImageObject | DanbooruImageObjecte} imageObj JSON object returned from image board
+   * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj: any): boolean {
+  photoValidation(imageObj: StandardImageObject | DanbooruImageObject): boolean {
     return this.goodPhoto(imageObj) && this.rightSizePhoto(imageObj);
   }
 
@@ -63,10 +64,10 @@ export default abstract class FetchImage {
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {ImageInterface} imageObj JSON object returned from image board
+   * @param {StandardImageObject | DanbooruImageObject} imageObj JSON object returned from image board
    * @returns {boolean} True if a valid image link
    */
-  goodPhoto(imageObj: any): boolean {
+  goodPhoto(imageObj: StandardImageObject | DanbooruImageObject): boolean {
     return (
       imageObj.hasOwnProperty("file_url") &&
       (imageObj.file_url.endsWith(".png") ||
@@ -77,10 +78,10 @@ export default abstract class FetchImage {
 
   /**
    * Checks if photo is small enough for Discord
-   * @param {ImageInterface} imageObj JSON object of the image
+   * @param {StandardImageObject | DanbooruImageObject} imageObj JSON object of the image
    * @returns {boolean} Returns true if image is small enough in bytes
    */
-  rightSizePhoto(imageObj: any): boolean {
+  rightSizePhoto(imageObj: StandardImageObject | DanbooruImageObject): boolean {
     // Number is equivalent to 10 megabytes
     const megabytes = imageObj.file_size / 1048576;
     return megabytes <= 10 && megabytes > 0;
