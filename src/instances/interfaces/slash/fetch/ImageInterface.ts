@@ -1,11 +1,11 @@
-interface StandardImageObject {
+export interface StandardImageObject {
     tags: string,
     file_url: string,
     file_size: number,
     rating: "s" | "q" | "e",
 }
 
-interface DanbooruImageObject {
+export interface DanbooruImageObject {
     tag_string: string,
     file_url: string,
     file_size: number,

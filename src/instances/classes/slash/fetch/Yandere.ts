@@ -1,5 +1,6 @@
 import FetchImage from "./FetchImage";
-import { EmptySIO } from "./EmptyImageObjects"
+import { EmptySIO } from "../../../objects/slash/fetch/EmptyImageObjects"
+import { StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 export default class Yandere extends FetchImage {
   /**
@@ -75,7 +76,7 @@ export default class Yandere extends FetchImage {
           message = photo.file_url;
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       this.handleError(error);
       // Sends reply to user
     } finally {
@@ -90,7 +91,7 @@ export default class Yandere extends FetchImage {
    * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
   async getTagSuggestions(tag: string): Promise<string> {
-    let url = `https://yande.re/tag.json?limit=20&name=${tag}*&type=&order=count`;
+    let url = `https://yande.re/tag.json?limit=30&name=${tag}*&type=&order=count`;
     let returnMsg = "There was an error trying to get the tags.";
     try {
     // Fetch request Danbooru API

@@ -1,3 +1,5 @@
+import { DanbooruImageObject, StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface"
+
 export const EmptySIO: StandardImageObject = {
     tags: "",
     file_url: "",

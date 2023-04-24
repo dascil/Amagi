@@ -1,12 +1,13 @@
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
-import { DEBUG } from "../json/config.json";
+import { DEBUG } from "../../../json/config.json";
 import chalk from "chalk";
+import { PrefixCommand, SlashCommand } from "../../interfaces/client/CommandInterface";
 
-class AmagiClient extends Client {
+export default class AmagiClient extends Client {
 
     // Create collections
-    public slashCommands: Collection<string, any>;
-    public prefixCommands: Collection<string, any>;
+    public slashCommands: Collection<string, SlashCommand>;
+    public prefixCommands: Collection<string, PrefixCommand>;
     public cooldowns: Collection<string, Collection<string, number>>;
     public prefixCooldowns: Collection<string, Collection<string, number>>;
     // Add colors for console messages
@@ -39,5 +40,3 @@ class AmagiClient extends Client {
         this.prefixCooldowns = new Collection();
     }
 }
-
-export default AmagiClient;

@@ -18,7 +18,7 @@ A personal bot for a discord server.
 
 - Slash Commands
     - Information commands such as bot ping
-    - Fetch command to image board like danbooru and yandere
+    - Fetch command to retrieve photo from image boards like danbooru and yandere
         - If tags are invalid, it will return a list of similar tags
     - Tag command to look up on specified boards
 
@@ -32,9 +32,10 @@ A personal bot for a discord server.
 - Color-coded console information
 
 - Configurations
-    - Debug mode (default:false) Logs start-up information
-    - SFW mode (default:true) Forces image board commands to only retrieve SFW photos (by image board standards)
-        - Since tags can still be explicit, commands can only be done in NSFW channels.
+    - DEBUG (default: `false`) Logs start-up information
+    - SFW (default: `true`) Forces image board commands to only retrieve SFW photos (by image board standards)
+      - Filters out potentially NSFW tags
+    - TRUST_USER (default: `false`) Echoes user's input in certain commands for a clearer message
 
 ## Requirements
 
@@ -56,6 +57,12 @@ A personal bot for a discord server.
 
 ## Disclaimer
 
-The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, **not** and are within Discord's terms of service; though, both of their guidelines should overlap well.\
-Our SFW tag filter should be able to catch the majority of the NSFW tags. If you do find a NSFW tag that avoided the filter, please let us know. \
+The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, and **not** Discord's guideline; though, both of their guidelines should overlap well.
+
+Our SFW tag filter should be able to catch the majority of the NSFW tags from being reccommended. If you do find a NSFW tag that avoided the filter, please let us know.
+
 We are not held responsible for any repercussions caused by using this repo.
+
+## TODO
+
+Add usage help command
