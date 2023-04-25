@@ -58,7 +58,7 @@ A personal bot for a discord server.
 ## Disclaimer
 
 The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, and **not** Discord's guideline; though, both of their guidelines should overlap well.
-To ensure no explicit content is displayed (bad tagging on image boards), make sure to turn on the explicit filter on discord
+To ensure no explicit content is displayed (bad tagging on image boards), make sure to turn on the explicit filter on discord.
 
 Our SFW tag filter should be able to catch the majority of the NSFW tags from being reccommended. If you do find a NSFW tag that avoided the filter, please let us know.
 
