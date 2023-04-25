@@ -1,7 +1,7 @@
 import { SFW, TRUST_USER } from "../../../../json/config.json";
 import { BLACKLIST, FETCH_RETRIES, FULL_TAG_FILTER, MAX_TAGS, TAG_FILTER } from "../../../../json/slash/fetch/fetchParameter.json"
 import chalk from "chalk";
-import { DanbooruImageObject, StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
+import { DanbooruImageObject, GelbooruImageObject, StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 /**
  * Fetch object for all image board commands
@@ -52,22 +52,29 @@ export default abstract class FetchImage {
   abstract getTagSuggestions(tag: string): Promise<string>
 
   /**
+   * A function to catch disallowed content on server
+   * @param {StandardImageObject | DanbooruImageObject | GelbooruImageObject} imageObj JSON object returned from Yandere
+   * @returns {boolean} True if photo is allowed
+   */
+  abstract allowedPhoto(imageObj: StandardImageObject | DanbooruImageObject | GelbooruImageObject): boolean
+
+  /**
    * Checks if photo is valid for posting
-   * @param {StandardImageObject | DanbooruImageObjecte} imageObj JSON object returned from image board
+   * @param {StandardImageObject | DanbooruImageObject | GelbooruImageObject} imageObj JSON object returned from image board
    * @returns {boolean} Returns True if photo is valid to post
    */
-  photoValidation(imageObj: StandardImageObject | DanbooruImageObject): boolean {
-    return this.goodPhoto(imageObj) && this.rightSizePhoto(imageObj);
+  photoValidation(imageObj: StandardImageObject | DanbooruImageObject | GelbooruImageObject): boolean {
+    return this.goodPhoto(imageObj) && this.allowedPhoto(imageObj);
   }
 
   /**
    * Takes in a JSON object from image board
    * and returns true if the JSON object contains
    * file_url parameter and is a photo url
-   * @param {StandardImageObject | DanbooruImageObject} imageObj JSON object returned from image board
+   * @param {StandardImageObject | DanbooruImageObject | GelbooruImageObject} imageObj JSON object returned from image board
    * @returns {boolean} True if a valid image link
    */
-  goodPhoto(imageObj: StandardImageObject | DanbooruImageObject): boolean {
+  goodPhoto(imageObj: StandardImageObject | DanbooruImageObject | GelbooruImageObject): boolean {
     return (
       imageObj.hasOwnProperty("file_url") &&
       (imageObj.file_url.endsWith(".png") ||
@@ -77,42 +84,13 @@ export default abstract class FetchImage {
   }
 
   /**
-   * Checks if photo is small enough for Discord
-   * @param {StandardImageObject | DanbooruImageObject} imageObj JSON object of the image
-   * @returns {boolean} Returns true if image is small enough in bytes
-   */
-  rightSizePhoto(imageObj: StandardImageObject | DanbooruImageObject): boolean {
-    // Number is equivalent to 10 megabytes
-    const megabytes = imageObj.file_size / 1048576;
-    return megabytes <= 10 && megabytes > 0;
-  }
-
-  /**
-   * A function to catch disallowed content on server
-   * @param {ImageInterface} imageObj JSON object returned from Yandere
-   * @returns {boolean} True if photo is allowed
-   */
-  allowedPhoto(imageObj: any): boolean {
-    // Catches photos not allowed
-    if (this.nsfwRatings.includes(imageObj.rating)) {
-      let tagList = imageObj.tags.split(" ");
-      tagList.forEach((tag: string) => {
-        if (this.blacklist.has(tag)) {
-          return false;
-        }
-      });
-    }
-    return true;
-  }
-
-  /**
    * Checks if array of tags contain a blacklisted tag
    * @param {string} tag Submitted tags
    * @returns {boolean} True if a blacklisted tag is found
    */
   containsBadTag(tag: string): boolean {
-      const tagList = tag.split("_");
-      return tagList.filter((tag:string) => this.blacklist.has(tag)).length !== 0;
+    const tagList = tag.split("_");
+    return tagList.filter((tag: string) => this.blacklist.has(tag)).length !== 0;
   }
 
   /**
@@ -126,8 +104,8 @@ export default abstract class FetchImage {
     }
 
     const tagList = tag.split("_");
-    return tagList.filter((tag:string) => this.sfwTagFilter.has(tag)).length !== 0;
-}
+    return tagList.filter((tag: string) => this.sfwTagFilter.has(tag)).length !== 0;
+  }
 
   /**
    * Logs information about error to console

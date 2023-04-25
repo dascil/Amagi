@@ -166,15 +166,6 @@ export default class Danbooru extends FetchImage {
   }
 
   /**
-   * Checks if photo is small enough for Discord
-   * @param {DanbooruImageObject} imageObj JSON object of the image
-   * @returns {boolean} Returns true if image is small enough in bytes
-   */
-  rightSizePhoto(imageObj: DanbooruImageObject): boolean {
-    return super.rightSizePhoto(imageObj);
-  }
-
-  /**
    * A function to catch disallowed content on server
    * @param {DanbooruImageObject} imageObj JSON object returned from Yandere
    * @returns {boolean} True if photo is allowed

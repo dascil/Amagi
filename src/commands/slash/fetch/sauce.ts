@@ -4,6 +4,7 @@ import { SFW } from "../../../json/config.json";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
 import Danbooru from "../../../instances/classes/slash/fetch/Danbooru";
 import Yandere from "../../../instances/classes/slash/fetch/Yandere";
+import Gelbooru from "../../../instances/classes/slash/fetch/Gelbooru";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,12 +18,12 @@ module.exports = {
     )
     .addSubcommand((subcommand) => subcommand.setName('detailed')
       .setDescription("Get photo from selected image board and selected tags.")
-      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" }, { name: "Yandere", value: "yandere" }))
+      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" },  { name: "Gelbooru", value: "gelbooru" }, { name: "Yandere", value: "yandere" }))
       .addStringOption((option) => option.setName("tag").setDescription("Name of tag").setRequired(true))
     )
     .addSubcommand((subcommand) => subcommand.setName('tag')
       .setDescription("Get tag suggestions on selected board. Ignores input after first space.")
-      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" }, { name: "Yandere", value: "yandere" }))
+      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" }, { name: "Gelbooru", value: "gelbooru" }, { name: "Yandere", value: "yandere" }))
       .addStringOption((option) => option.setName("tag").setDescription("Name of tag").setRequired(true))
     ),
   async execute(interaction: ChatInputCommandInteraction<CacheType>, client: AmagiClient) {
@@ -37,9 +38,11 @@ module.exports = {
         // Checks to see which command to call
         const subcommand = interaction.options.getSubcommand();
         const tag = interaction.options.getString("tag") ?? "azur_lane";
-        let fetchObj: Danbooru | Yandere;
+        let fetchObj: Danbooru | Gelbooru | Yandere;
         if (subcommand === "quick" || interaction.options.getString("board") === "danbooru") {
           fetchObj = new Danbooru(tag);
+        } else if (interaction.options.getString("board") === "gelbooru") {
+          fetchObj = new Gelbooru(tag);
         } else {
           fetchObj = new Yandere(tag);
         }

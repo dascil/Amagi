@@ -161,21 +161,21 @@ export default class Yandere extends FetchImage {
   }
 
   /**
-   * Checks if photo is small enough for Discord
-   * @param {StandardImageObject} imageObj JSON object of the image
-   * @returns {boolean} Returns true if image is small enough in bytes
-   */
-  rightSizePhoto(imageObj: StandardImageObject): boolean {
-    return super.rightSizePhoto(imageObj);
-  }
-
-  /**
    * A function to catch disallowed content on server
    * @param {StandardImageObject} imageObj JSON object returned from Yandere
    * @returns {boolean} True if photo is allowed
    */
   allowedPhoto(imageObj: StandardImageObject): boolean {
-    return super.allowedPhoto(imageObj);
+    // Catches photos not allowed
+    if (this.nsfwRatings.includes(imageObj.rating)) {
+      let tagList = imageObj.tags.split(" ");
+      tagList.forEach((tag: string) => {
+        if (this.blacklist.has(tag)) {
+          return false;
+        }
+      });
+    }
+    return true;
   }
 
   /**
