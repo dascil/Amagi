@@ -18,7 +18,7 @@ module.exports = {
     )
     .addSubcommand((subcommand) => subcommand.setName('detailed')
       .setDescription("Get photo from selected image board and selected tags.")
-      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" },  { name: "Gelbooru", value: "gelbooru" }, { name: "Yandere", value: "yandere" }))
+      .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" }, { name: "Gelbooru", value: "gelbooru" }, { name: "Yandere", value: "yandere" }))
       .addStringOption((option) => option.setName("tag").setDescription("Name of tag").setRequired(true))
     )
     .addSubcommand((subcommand) => subcommand.setName('tag')
@@ -26,6 +26,17 @@ module.exports = {
       .addStringOption((option) => option.setName("board").setDescription("Board to look tag up on").setRequired(true).addChoices({ name: 'Danbooru', value: "danbooru" }, { name: "Gelbooru", value: "gelbooru" }, { name: "Yandere", value: "yandere" }))
       .addStringOption((option) => option.setName("tag").setDescription("Name of tag").setRequired(true))
     ),
+  usage: "sauce {command}",
+  return: "Below is a list of the sauce commands:\n\n \
+           `detailed`\n \
+           Retrieve photo from specified image board based on tags\n \
+           **Parameters:** `board` **Required:** True, `tag` **Required:** True \n\n \
+           `quick`\n \
+           Retrieve a photo from Danbooru based on tags.\n \
+           **Parameters:** `tag` **Required:** False **Default:** `azur_lane`\n\n \
+           `tag`\n \
+           Retrieve list of suggested tags for a tag on the specified image board \n \
+           **Parameters:** `board` **Required:** True, `tag` **Required:** True",
   async execute(interaction: ChatInputCommandInteraction<CacheType>, client: AmagiClient) {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;

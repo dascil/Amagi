@@ -6,6 +6,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('Return my ping!'),
+    usage: "ping",
+    return: "Returns the user's and the bot's ping.",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         const msg = await interaction.deferReply({
             fetchReply: true
