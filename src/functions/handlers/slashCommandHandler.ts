@@ -4,7 +4,6 @@ import { readdirSync } from "fs";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
 require("dotenv").config();
 
-const guild_id: string = process.env["GUILD_ID"]!;
 const client_id: string = process.env["CLIENT_ID"]!;
 const token: string = process.env["TOKEN"]!;
 
@@ -34,11 +33,10 @@ module.exports = async (client: AmagiClient) => {
     });
 
     const clientID = client_id;
-    const guildID = guild_id;
     const rest = new REST({ version: "10" }).setToken(token);
 
     // Pass commands into server
-    await rest.put(Routes.applicationGuildCommands(clientID, guildID), {
+    await rest.put(Routes.applicationCommands(clientID), {
       body: commandArray,
     })
 
