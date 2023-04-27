@@ -1,4 +1,6 @@
 {
+    "FETCH_RETRIES": 3,
+    "MAX_TAGS": 3,
     "BLACKLIST": [
         "bestiality",
         "cub",
@@ -241,7 +243,5 @@
         "suspended_congress",
         "wax_play",
         "wooden_horse"
-    ],
-    "FETCH_RETRIES": 3,
-    "MAX_TAGS": 3
+    ]
 }
