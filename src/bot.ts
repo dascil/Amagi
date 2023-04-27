@@ -1,5 +1,5 @@
-import { readdirSync } from "fs";
 import AmagiClient from "./instances/classes/client/AmagiClient";
+import { readdirSync } from "fs";
 require("dotenv").config();
 
 const token: string = process.env['TOKEN']!;

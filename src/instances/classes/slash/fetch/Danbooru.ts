@@ -1,5 +1,4 @@
 import { load } from "cheerio";
-import { EmptyDIO } from "../../../objects/slash/fetch/EmptyImageObjects";
 import FetchImage from "./FetchImage";
 import { DanbooruImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
@@ -34,7 +33,7 @@ export default class Danbooru extends FetchImage {
     let validTag = true;
     let photoFound = false;
     let jsonObj: Response;
-    let photo: DanbooruImageObject = EmptyDIO;
+    let photo: DanbooruImageObject | null = null;;
     try {
       do {
         // Fetch request Danbooru API
@@ -65,7 +64,9 @@ export default class Danbooru extends FetchImage {
         } else {
           photo = await jsonObj.json();
           // Valid photo found with correct format
-          photoFound = this.photoValidation(photo);
+          if (photo) {
+            photoFound = this.photoValidation(photo);
+          }
         }
         interval++;
       } while (interval < this.retries && validTag && !photoFound);
@@ -75,7 +76,7 @@ export default class Danbooru extends FetchImage {
           message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
         } else {
           // Send picture
-          message = photo.file_url;
+          message = photo!.file_url;
         }
       }
     } catch (error) {

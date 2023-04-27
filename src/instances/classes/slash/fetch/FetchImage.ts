@@ -1,7 +1,7 @@
 import { SFW, TRUST_USER } from "../../../../json/config.json";
 import { BLACKLIST, FETCH_RETRIES, FULL_TAG_FILTER, MAX_TAGS, TAG_FILTER } from "../../../../json/slash/fetch/fetchParameter.json"
-import chalk from "chalk";
 import { DanbooruImageObject, GelbooruImageObject, StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
+import chalk from "chalk";
 
 /**
  * Fetch object for all image board commands

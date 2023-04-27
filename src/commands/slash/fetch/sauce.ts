@@ -1,4 +1,4 @@
-import { CacheType, ChannelType, ChatInputCommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
+import { CacheType, ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../json/slash/fetch/fetchErrors.json";
 import { SFW } from "../../../json/config.json";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";

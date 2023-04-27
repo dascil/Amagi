@@ -1,5 +1,4 @@
 import FetchImage from "./FetchImage";
-import { EmptyGIO } from "../../../objects/slash/fetch/EmptyImageObjects"
 import { GelbooruImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 export default class Gelbooru extends FetchImage {
@@ -33,7 +32,7 @@ export default class Gelbooru extends FetchImage {
         let validTag = true;
         let photoFound = false;
         let jsonObj: Response;
-        let photo: GelbooruImageObject = EmptyGIO;
+        let photo: GelbooruImageObject | null = null;
         try {
             do {
                 // Fetch request Danbooru API
@@ -63,7 +62,9 @@ export default class Gelbooru extends FetchImage {
                         // Deal with TypeScript warning
                         if (imageObj.post && imageObj.post.length >= 1) {
                             photo = imageObj.post[0];
-                            photoFound = this.photoValidation(photo);
+                            if (photo) {
+                                photoFound = this.photoValidation(photo);
+                            }
                         }
                     }
                 }
@@ -75,7 +76,7 @@ export default class Gelbooru extends FetchImage {
                     message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
                 } else {
                     // Send picture
-                    message = photo.file_url;
+                    message = photo!.file_url;
                 }
             }
         } catch (error) {

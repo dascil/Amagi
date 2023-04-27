@@ -1,5 +1,4 @@
 import FetchImage from "./FetchImage";
-import { EmptySIO } from "../../../objects/slash/fetch/EmptyImageObjects"
 import { StandardImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
 
 export default class Yandere extends FetchImage {
@@ -32,7 +31,7 @@ export default class Yandere extends FetchImage {
     let validTag = true;
     let photoFound = false;
     let jsonObj: Response;
-    let photo: StandardImageObject = EmptySIO;
+    let photo: StandardImageObject | null = null;
     try {
       do {
         // Fetch request Danbooru API
@@ -61,7 +60,9 @@ export default class Yandere extends FetchImage {
             // Valid photo found with correct format
             if (jsonObj instanceof Array) { // Deal with TypeScript warning
               photo = jsonObj[0];
-              photoFound = this.photoValidation(photo);
+              if (photo) {
+                photoFound = this.photoValidation(photo);
+              }
             }
           }
         }
@@ -73,7 +74,7 @@ export default class Yandere extends FetchImage {
           message = this.errorMsgs.NO_SUITABLE_PHOTO_MSG;
         } else {
           // Send picture
-          message = photo.file_url;
+          message = photo!.file_url;
         }
       }
     } catch (error) {
@@ -94,49 +95,49 @@ export default class Yandere extends FetchImage {
     let url = `https://yande.re/tag.json?limit=30&name=${tag}*&type=&order=count`;
     let returnMsg = "There was an error trying to get the tags.";
     try {
-    // Fetch request Danbooru API
-    let jsonObj = await fetch(url);
-    // Catch error during fetch request
-    if (!jsonObj.ok) {
-      throw new Error("Error getting tags.");
-    }
-    let photoInfo = await jsonObj.json();
-    // Parse html page
-    let goodTags: Array<string> = [];
-    let goodTagsLength = 0;
-    // Find and filter potential tags
-    for (let i = 0; i < photoInfo.length; i++) {
-      const potentialTag = photoInfo[i]["name"];
-      // Filter out nsfw tags
-      if (this.containsBadTag(potentialTag) || (this.sfw && this.containsBadTagSFW(potentialTag))) {
-        continue;
+      // Fetch request Danbooru API
+      let jsonObj = await fetch(url);
+      // Catch error during fetch request
+      if (!jsonObj.ok) {
+        throw new Error("Error getting tags.");
       }
-      goodTags.push("`" + potentialTag + "`");
-      goodTagsLength++;
-      if (goodTagsLength === 10) {
-        break;
+      let photoInfo = await jsonObj.json();
+      // Parse html page
+      let goodTags: Array<string> = [];
+      let goodTagsLength = 0;
+      // Find and filter potential tags
+      for (let i = 0; i < photoInfo.length; i++) {
+        const potentialTag = photoInfo[i]["name"];
+        // Filter out nsfw tags
+        if (this.containsBadTag(potentialTag) || (this.sfw && this.containsBadTagSFW(potentialTag))) {
+          continue;
+        }
+        goodTags.push("`" + potentialTag + "`");
+        goodTagsLength++;
+        if (goodTagsLength === 10) {
+          break;
+        }
       }
-    }
-    // Change return message based on bot configurations
-    let tagMsg = `**${tag}**`;
-    if (!this.trustUser) {
-      tagMsg = "Tag";
-    }
-    returnMsg = "";
-    if (this.sfw) {
-      returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
-    }
+      // Change return message based on bot configurations
+      let tagMsg = `**${tag}**`;
+      if (!this.trustUser) {
+        tagMsg = "Tag";
+      }
+      returnMsg = "";
+      if (this.sfw) {
+        returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
+      }
 
-    if (goodTags.length === 0) {
-      returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
-    } else {
-      returnMsg =
-        `These are some tags similar to ${tagMsg.toLowerCase()}:\n` +
-        goodTags.join("\n");
+      if (goodTags.length === 0) {
+        returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
+      } else {
+        returnMsg =
+          `These are some tags similar to ${tagMsg.toLowerCase()}:\n` +
+          goodTags.join("\n");
+      }
+    } catch (error) {
+      this.handleError(error);
     }
-  } catch (error) {
-    this.handleError(error);
-  }
     return returnMsg;
   }
 
