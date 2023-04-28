@@ -4,5 +4,6 @@
     "NOT_IN_A_NSFW_CHANNEL_MSG": "This command can only be used in a NSFW channel.",
     "SITE_UNREACHABLE_MSG": "Unable to retrieve image from site.\nPlease make the site is not down or in maintanence.",
     "STANDARD_ERROR_MSG": "An error has occured.\nPlease contact an admin and describe what happened.",
-    "TOO_MANY_TAGS_MSG": "You have entered too many tags.\nThe max number of tags for this command: "
+    "TOO_MANY_TAGS_MSG": "You have entered too many tags.\nThe max number of tags for this command: ",
+    "INVALID_TAG_PARTIAL_MSG": "One or more tags is invalid. Check the similar tags below and try again.\n\n"
 }

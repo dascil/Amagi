@@ -65,6 +65,6 @@ Our SFW tag filter should be able to catch the majority of the NSFW tags from be
 We are not held responsible for any repercussions caused by using this repo.
 
 ## TODO
-Add delete bot message capability
-
-Sauce command QoL features
+- Sauce command QoL features
+- Tighter Sauce SFW features
+- Add delete bot message capability

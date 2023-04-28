@@ -1,10 +1,8 @@
-import { CacheType, ChannelType, ChatInputCommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
+import { CacheType, ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../json/slash/fetch/fetchErrors.json";
-import { SFW } from "../../../json/config.json";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
-import Danbooru from "../../../instances/classes/slash/fetch/Danbooru";
-import Yandere from "../../../instances/classes/slash/fetch/Yandere";
-import Gelbooru from "../../../instances/classes/slash/fetch/Gelbooru";
+import Board from "../../../instances/interfaces/slash/fetch/BoardInterface";
+import BOARDS from "../../../instances/objects/slash/fetch/ImageBoards";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -41,37 +39,43 @@ module.exports = {
     const msg = await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     // Interaction will always come from a channel
-    let channel = interaction.channel!;
+    const channel = interaction.channel!;
     if (channel.type === ChannelType.GuildText) {
-      if (!channel.nsfw && !SFW) {
+      const fetch = client.fetch;
+      if (!channel.nsfw && !fetch.sfw) {
         newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
       } else {
-        // Checks to see which command to call
+        // Retrieve information
         const subcommand = interaction.options.getSubcommand();
-        const tag = interaction.options.getString("tag") ?? "azur_lane";
-        let fetchObj: Danbooru | Gelbooru | Yandere;
-        if (subcommand === "quick" || interaction.options.getString("board") === "danbooru") {
-          fetchObj = new Danbooru(tag);
-        } else if (interaction.options.getString("board") === "gelbooru") {
-          fetchObj = new Gelbooru(tag);
+        const boardName = interaction.options.getString("board");
+        let tag = interaction.options.getString("tag") ?? "azur_lane";
+        let board: Board;
+        // Checks to see which command to call
+        if (subcommand === "quick" || boardName === "danbooru") {
+          board = BOARDS.DANBOORU;
+        } else if (boardName === "gelbooru") {
+          board = BOARDS.GELBOORU
         } else {
-          fetchObj = new Yandere(tag);
+          board = BOARDS.YANDERE;
         }
         // Check max allowed tags
-        let allowed_tag_amount = fetchObj.maxTags;
-        if (fetchObj instanceof Danbooru && fetchObj.sfw) {
-          allowed_tag_amount -= 1;
+        let allowed_tag_amount = fetch.maxTags;
+        if (board.name === "danbooru" && fetch.sfw) {
+          allowed_tag_amount = 1;
         }
-        // Looks for blacklisted terms
-        if (fetchObj.containsBadTag(fetchObj.tag)) {
+        // Prep tags for usage
+        tag = fetch.filterTag(tag);
+        const tagList = fetch.getTagList(tag);
+        // Looks for disallowed terms
+        if (tag.length === 0 || fetch.containsBadTag(tag)) {
           newMsg = BAD_TAG_MSG;
         } else if (subcommand === "tag") {
-          newMsg = await fetchObj.getTagSuggestions(fetchObj.tagList[0]);
+          newMsg = await fetch.getTagSuggestions(tagList[0], board);
         }
-        else if (fetchObj.tagList.length > allowed_tag_amount) {
+        else if (tagList.length > allowed_tag_amount) {
           newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
         } else {
-          newMsg = await fetchObj.getPhoto();
+          newMsg = await fetch.getPhoto(tag, tagList, board);
         }
       }
     }

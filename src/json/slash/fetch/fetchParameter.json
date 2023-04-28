@@ -1,4 +1,6 @@
 {
+    "FETCH_RETRIES": 3,
+    "MAX_TAGS": 3,
     "BLACKLIST": [
         "bestiality",
         "cub",
@@ -68,6 +70,7 @@
         "condom",
         "crotch",
         "crotchless",
+        "cuckold",
         "cuckolding",
         "cum",
         "cumdump",
@@ -76,6 +79,8 @@
         "cupless",
         "deepthroat",
         "defloration",
+        "dick",
+        "dicks",
         "dildo",
         "docking",
         "doggystyle",
@@ -90,6 +95,7 @@
         "felching",
         "fellatio",
         "femdom",
+        "fetish",
         "fingering",
         "fisting",
         "footjob",
@@ -154,6 +160,7 @@
         "pee",
         "peeing",
         "pegging",
+        "penetrating",
         "penetration",
         "penis",
         "penises",
@@ -162,6 +169,9 @@
         "prostitution",
         "pubic",
         "pussy",
+        "rim",
+        "rimjob",
+        "rimming",
         "selfcest",
         "sex",
         "sexaroid",
@@ -217,6 +227,7 @@
         "bust_cup",
         "daisy_chain",
         "extreme_content",
+        "foot_worship",
         "glands_of_montgomery",
         "golden_shower",
         "hand_in_bra",
@@ -227,6 +238,7 @@
         "love_train",
         "neglect_play",
         "nipple-to-nipple",
+        "panty_pull",
         "pet_play",
         "pony_play",
         "power_bottom",
@@ -241,7 +253,5 @@
         "suspended_congress",
         "wax_play",
         "wooden_horse"
-    ],
-    "FETCH_RETRIES": 3,
-    "MAX_TAGS": 3
+    ]
 }
