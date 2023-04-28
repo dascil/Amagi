@@ -139,7 +139,7 @@ export default class FetchImage {
       for (let i = 0; i < photoInfo.length; i++) {
         const potentialTag = photoInfo[i]["name"];
         // Filter out nsfw tags and rarely used tags
-        if (this.blacklist.has(potentialTag) || photoInfo[i]["count"] < 10 ||
+        if (this.containsBadTag(potentialTag) || photoInfo[i]["count"] < 10 ||
         (this.sfw && this.containsBadTagSFW(potentialTag))) {
           continue;
         }
