@@ -11,11 +11,11 @@ import Board from "../../../interfaces/slash/fetch/BoardInterface";
 export default class FetchImage {
   public blacklist: Set<string> = new Set(fetchParams.BLACKLIST);
   public maxTags: number = fetchParams.MAX_TAGS;
-  public sfw: boolean = botParams.SFW;
 
-  private filter = /[{}<>\[\]/\\+*!?$%&*=~"`;|]/g;
+  private filter = /[{}<>\[\]/\\+*!?$%&*=~"`;:|]/g;
   private retries: number = fetchParams.FETCH_RETRIES;
-  private sfwBlacklist: Set<string> = new Set(fetchParams.FULL_TAG_FILTER);
+  private sfwBlacklist: Set<string> = new Set(fetchParams.SFW_BLACKLIST);
+  private sfwBlacklistFullTag: Set<string> = new Set(fetchParams.FULL_TAG_FILTER);
   private sfwTagFilter: Set<string> = new Set(fetchParams.TAG_FILTER);
   private trustUser: boolean = botParams.TRUST_USER;
 
@@ -46,11 +46,11 @@ export default class FetchImage {
    * @param {Board} board Information exlusive to specific site
    * @returns {Promise<string>} Message containing image URL or error message.
    */
-  async getPhoto(tag: string, tagList: Array<string>, board: Board): Promise<string> {
+  async getPhoto(tag: string, tagList: Array<string>, board: Board, sfwRequired: boolean): Promise<string> {
     let message = STANDARD_ERROR_MSG;
     // Build URL
     let baseTag = board.base_tag;
-    if (this.sfw) {
+    if (sfwRequired) {
       baseTag = board.sfw_base_tag;
     }
     let url = `${board.image_query}${baseTag}+${tag}`;
@@ -70,7 +70,7 @@ export default class FetchImage {
             throw new Error(await jsonObj.text());
           }
           validTag = false;
-          message = await this.danbooruNotOKStatus(jsonObj, board, tagList);
+          message = await this.danbooruNotOKStatus(jsonObj, board, tagList, sfwRequired);
         } else {
           let imageObj = await jsonObj.json();
           // One or more tags does not exist on Gelbooru or Yandere
@@ -79,17 +79,17 @@ export default class FetchImage {
             message = INVALID_TAG_PARTIAL_MSG;
             // Get suggested tags
             for (let i = 0; i < tagList.length; i++) {
-              message += await this.getTagSuggestions(tagList[i], board) + "\n\n";
+              message += await this.getTagSuggestions(tagList[i], board, sfwRequired) + "\n\n";
             }
             validTag = false;
-          // Potential photo found
+            // Potential photo found
           } else {
             // Prep image object information for usage
             if (board.name === "gelbooru") photo = imageObj.post[0];
             else if (board.name === "yandere") photo = imageObj[0];
             else photo = imageObj;
 
-            photoFound = this.photoValidation(photo!, board);
+            photoFound = this.photoValidation(photo!, board, sfwRequired);
           }
         }
         interval++;
@@ -118,7 +118,7 @@ export default class FetchImage {
    * @param {Board} board Information exlusive to specific site
    * @returns {Promise<string>} A message containing the similar tags or a message stating no similar tags found
    */
-  async getTagSuggestions(tag: string, board: Board): Promise<string> {
+  async getTagSuggestions(tag: string, board: Board, sfwRequired: boolean): Promise<string> {
     let returnMsg = "There was an error trying to get the tags.";
     // Fetch request Board API
     try {
@@ -139,8 +139,7 @@ export default class FetchImage {
       for (let i = 0; i < photoInfo.length; i++) {
         const potentialTag = photoInfo[i]["name"];
         // Filter out nsfw tags and rarely used tags
-        if (this.containsBadTag(potentialTag) || photoInfo[i]["count"] < 10 ||
-        (this.sfw && this.containsBadTagSFW(potentialTag))) {
+        if (this.containsBadTag(potentialTag, sfwRequired) || photoInfo[i]["count"] < 10 || potentialTag.endsWith(",")) {
           continue;
         }
         goodTags.push("`" + potentialTag + "`");
@@ -155,8 +154,8 @@ export default class FetchImage {
       }
 
       returnMsg = "";
-      if (this.sfw) {
-        returnMsg = `\n${tagMsg} may also not be allowed due to server configurations.`;
+      if (sfwRequired) {
+        returnMsg = `\nYou can also try again on a NSFW channel.`;
       }
 
       if (goodTags.length === 0) {
@@ -173,25 +172,20 @@ export default class FetchImage {
   /**
    * Checks if array of tags contain a blacklisted tag
    * @param {string} tag Submitted tag
+   * @param {boolean} sfwRequired If sfwChecks is required
    * @returns {boolean} True if a blacklisted tag is found
    */
-  containsBadTag(tag: string): boolean {
-    const tagList = tag.split("_");
-    return tagList.filter((tag: string) => this.blacklist.has(tag)).length !== 0;
-  }
+  containsBadTag(tag: string, sfwRequired: boolean): boolean {
+    const tagList = tag.split(/[_-\s]/g);
+    let totalBadTags = 0;
+    if (sfwRequired) {
+      if (this.sfwBlacklistFullTag.has(tag)) return true;
 
-  /**
-   * Checks if array of tags contains NSFW tag
-   * @param {string} tag Submitted tags
-   * @returns {boolean} True if a blacklisted tag is found
-   */
-  private containsBadTagSFW(tag: string): boolean {
-    if (this.sfwBlacklist.has(tag)) {
-      return true
+      totalBadTags += tagList.filter((tag: string) => this.sfwTagFilter.has(tag)).length;
     }
 
-    const tagList = tag.split("_");
-    return tagList.filter((tag: string) => this.sfwTagFilter.has(tag)).length !== 0;
+    totalBadTags += tagList.filter((tag: string) => this.blacklist.has(tag)).length
+    return totalBadTags !== 0;
   }
 
   /**
@@ -200,8 +194,8 @@ export default class FetchImage {
    * @param {Board} board Information exlusive to specific site
    * @returns {boolean} Returns True if photo is valid to post
    */
-  private photoValidation(imageObj: DanbooruImageObject | GelbooruImageObject | YandereImageObject, board: Board): boolean {
-    return this.goodPhoto(imageObj) && this.allowedPhoto(imageObj, board);
+  private photoValidation(imageObj: DanbooruImageObject | GelbooruImageObject | YandereImageObject, board: Board, sfwRequired: boolean): boolean {
+    return this.goodPhoto(imageObj) && this.allowedPhoto(imageObj, board, sfwRequired);
   }
 
   /**
@@ -226,20 +220,35 @@ export default class FetchImage {
    * @param {Board} board Information exlusive to specific site
    * @returns {boolean} True if photo is allowed
    */
-  private allowedPhoto(imageObj: DanbooruImageObject | GelbooruImageObject | YandereImageObject, board: Board): boolean {
-    if (board.nsfw_ratings.includes(imageObj.rating)) {
-      let tagList = null;
-      if (imageObj.tag_string) {
-        tagList = imageObj.tag_string!.split(" ");
-      } else {
-        tagList = imageObj.tags.split(" ");
-      }
-      tagList.forEach((tag: string) => {
-        if (this.blacklist.has(tag)) {
-          return false;
+  private allowedPhoto(imageObj: DanbooruImageObject | GelbooruImageObject | YandereImageObject, board: Board, sfwRequired: boolean): boolean {
+    let tagList = null;
+    let sfwTaglist = null;
+    if (imageObj.tag_string) {
+      tagList = imageObj.tag_string.split(/[-_\s]/g);
+      if (sfwRequired) sfwTaglist = imageObj.tag_string.split(" ");
+    } else {
+      tagList = imageObj.tags.split(/[-_\s]/g);
+      if (sfwRequired) sfwTaglist = imageObj.tags.split(" ");
+    }
+
+    // Checks if certain sfw blacklisted full tags exist
+    if (sfwRequired) {
+      sfwTaglist?.forEach(tag => {
+        if (this.sfwBlacklistFullTag.has(tag)) return false;
+      })
+    }
+
+    // Checks NSFW photos for disallowed tags
+    if (sfwRequired || (imageObj.rating !== board.sfw_rating)) {
+      tagList.forEach(tag => {
+        if (this.blacklist.has(tag)) return false;
+
+        if (sfwRequired) {
+          if (this.sfwBlacklist.has(tag)) return false;
         }
       });
     }
+
     return true;
   }
 
@@ -260,16 +269,17 @@ export default class FetchImage {
    * @param {Response} jsonObj Response from fetch to Danbooru API
    * @param {Board} board Object containing necessary Board parameters
    * @param {Array<string>} tagList A list of filtered tags
+   * @param {boolean} sfwRequired Checks if sfw mode is required
    * @returns {Promise<string>} A message containing information of suggested tags
    */
-  private async danbooruNotOKStatus(jsonObj: Response, board: Board, tagList: Array<string>): Promise<string> {
+  private async danbooruNotOKStatus(jsonObj: Response, board: Board, tagList: Array<string>, sfwRequired: boolean): Promise<string> {
     let message = null;
     let error = await jsonObj.json();
     if (error.hasOwnProperty("message") && error.message === "That record was not found.") {
       message = INVALID_TAG_PARTIAL_MSG;
       // Get suggested tags
       for (let i = 0; i < tagList.length; i++) {
-        message += (await this.getTagSuggestions(tagList[i], board)) + "\n\n";
+        message += (await this.getTagSuggestions(tagList[i], board, sfwRequired)) + "\n\n";
       }
       return message;
       // Danbooru site error

@@ -1,9 +1,9 @@
 import { CacheType, ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { BAD_TAG_MSG, NOT_IN_A_NSFW_CHANNEL_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../json/slash/fetch/fetchErrors.json";
+import { BAD_TAG_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../json/slash/fetch/fetchErrors.json";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
 import Board from "../../../instances/interfaces/slash/fetch/BoardInterface";
 import BOARDS from "../../../instances/objects/slash/fetch/ImageBoards";
-
+import { SFW } from "../../../json/config.json"
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("sauce")
@@ -42,42 +42,41 @@ module.exports = {
     const channel = interaction.channel!;
     if (channel.type === ChannelType.GuildText) {
       const fetch = client.fetch;
-      if (!channel.nsfw && !fetch.sfw) {
-        newMsg = NOT_IN_A_NSFW_CHANNEL_MSG;
+      const sfwRequired = !channel.nsfw || SFW;
+      // Retrieve information
+      const subcommand = interaction.options.getSubcommand();
+      const boardName = interaction.options.getString("board");
+      let tag = interaction.options.getString("tag") ?? "azur_lane";
+      let board: Board;
+      // Checks to see which command to call
+      if (subcommand === "quick" || boardName === "danbooru") {
+        board = BOARDS.DANBOORU;
+      } else if (boardName === "gelbooru") {
+        board = BOARDS.GELBOORU
       } else {
-        // Retrieve information
-        const subcommand = interaction.options.getSubcommand();
-        const boardName = interaction.options.getString("board");
-        let tag = interaction.options.getString("tag") ?? "azur_lane";
-        let board: Board;
-        // Checks to see which command to call
-        if (subcommand === "quick" || boardName === "danbooru") {
-          board = BOARDS.DANBOORU;
-        } else if (boardName === "gelbooru") {
-          board = BOARDS.GELBOORU
-        } else {
-          board = BOARDS.YANDERE;
-        }
-        // Check max allowed tags
-        let allowed_tag_amount = fetch.maxTags;
-        if (board.name === "danbooru" && fetch.sfw) {
-          allowed_tag_amount = 1;
-        }
-        // Prep tags for usage
-        tag = fetch.filterTag(tag);
-        const tagList = fetch.getTagList(tag);
-        // Looks for disallowed terms
-        if (tag.length === 0 || fetch.containsBadTag(tag)) {
-          newMsg = BAD_TAG_MSG;
-        } else if (subcommand === "tag") {
-          newMsg = await fetch.getTagSuggestions(tagList[0], board);
-        }
-        else if (tagList.length > allowed_tag_amount) {
-          newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
-        } else {
-          newMsg = await fetch.getPhoto(tag, tagList, board);
-        }
+        board = BOARDS.YANDERE;
       }
+      // Check max allowed tags
+      let allowed_tag_amount = fetch.maxTags;
+      if (board.name === "danbooru" && sfwRequired) {
+        allowed_tag_amount = 1;
+      }
+      // Prep tags for usage
+      tag = fetch.filterTag(tag);
+      const tagList = fetch.getTagList(tag);
+      // Looks for disallowed terms
+      if (tag.length === 0 || fetch.containsBadTag(tag, sfwRequired)) {
+        newMsg = BAD_TAG_MSG;
+        if (sfwRequired) newMsg += "\nOr, try again on a NSFW channel."
+      } else if (subcommand === "tag") {
+        newMsg = await fetch.getTagSuggestions(tagList[0], board, sfwRequired);
+      }
+      else if (tagList.length > allowed_tag_amount) {
+        newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
+      } else {
+        newMsg = await fetch.getPhoto(tag, tagList, board, sfwRequired);
+      }
+
     }
     // Sends reply to user
     await interaction.editReply({
