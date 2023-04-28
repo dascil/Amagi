@@ -33,8 +33,9 @@ A personal bot for a discord server.
 
 - Configurations
     - DEBUG (default: `false`) Logs start-up information
-    - SFW (default: `true`) Forces image board commands to only retrieve SFW photos (by image board standards)
+    - SFW (default: `false`) Forces image board commands to only retrieve SFW photos (by image board standards)
       - Filters out potentially NSFW tags
+      - When `false`, NSFW photos and tags can show up only on NSFW channels.
     - TRUST_USER (default: `false`) Echoes user's input in certain commands for a clearer message
 
 ## Requirements
@@ -65,6 +66,4 @@ Our SFW tag filter should be able to catch the majority of the NSFW tags from be
 We are not held responsible for any repercussions caused by using this repo.
 
 ## TODO
-- Sauce command QoL features
-- Tighter Sauce SFW features
 - Add delete bot message capability
