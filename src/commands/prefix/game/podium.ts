@@ -11,7 +11,7 @@ module.exports = {
     name: "podium",
     description: "Reacts with podium emotes to attached photo",
     usage: "podium",
-    return: "Returns podium emote reactions to photo",
+    return: "Returns podium emote reactions to photo. \n**Requires:** A photo with extension png, jpg, jpeg, or webp.",
     cooldown: 10,
     async execute(message: Message, args: Array<string>, client: AmagiClient) {
         if (message.attachments.size >= 1) {

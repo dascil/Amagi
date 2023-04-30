@@ -7,7 +7,7 @@ module.exports = {
     name: "lr",
     description: "Reacts with lr emotes to attached photo",
     usage: "lr",
-    return: "Returns lr emote reactions to photo",
+    return: "Returns lr emote reactions to photo.\n**Requires:** A photo with extension png, jpg, jpeg, or webp.",
     cooldown: 10,
     async execute(message: Message, args: Array<string>, client: AmagiClient) {
         if (message.attachments.size >= 1) {

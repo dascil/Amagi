@@ -29,10 +29,10 @@ module.exports = {
     return: "Below is a list of the lr commands: \n\n \
              `link`\n \
              Reacts with lr emotes to linked photo\n \
-             **Parameters:** `link` **Required:** True \n \
+             **Parameters:** `link` **Required:** True \n\n \
              `attachment`\n \
              Reacts with lr emotes to attached photo\n \
-             **Parameters:** `attachment` **Required:** True \n",
+             **Parameters:** `attachment` **Required:** True",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         await interaction.deferReply();
 
