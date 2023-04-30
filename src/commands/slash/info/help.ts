@@ -10,8 +10,16 @@ module.exports = {
             .setName("prefix")
             .setDescription("Manual for prefix commands")
             .addSubcommand(command => command
+                .setName("lr")
+                .setDescription("Manual for prefix ping command")
+            )
+            .addSubcommand(command => command
                 .setName("ping")
                 .setDescription("Manual for prefix ping command")
+            )
+            .addSubcommand(command => command
+                .setName("podium")
+                .setDescription("Manual for prefix podium command")
             )
         )
         .addSubcommandGroup(group => group
@@ -22,8 +30,16 @@ module.exports = {
                 .setDescription("Manual for slash help command")
             )
             .addSubcommand(command => command
+                .setName("lr")
+                .setDescription("Manual for slash lr command")
+            )
+            .addSubcommand(command => command
                 .setName("ping")
                 .setDescription("Manual for slash ping command")
+            )
+            .addSubcommand(command => command
+                .setName("podium")
+                .setDescription("Manual for slash podium command")
             )
             .addSubcommand(command => command
                 .setName("sauce")
