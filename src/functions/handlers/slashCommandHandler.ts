@@ -13,9 +13,9 @@ module.exports = async (client: AmagiClient) => {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + "Begin loading slash commands...");
     }
-    readdirSync("./built/commands/slash").forEach((folder) => {
+    readdirSync("./build/commands/slash").forEach((folder) => {
       // Get all slash script files in slash subdirectory
-      const slashFiles = readdirSync(`./built/commands/slash/${folder}`).filter(
+      const slashFiles = readdirSync(`./build/commands/slash/${folder}`).filter(
         (file) => file.endsWith(".js")
       );
 

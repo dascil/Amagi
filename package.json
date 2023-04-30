@@ -1,8 +1,8 @@
 {
   "name": "amagi",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Discord bot for personal server",
-  "main": "./built/bot.js",
+  "main": "./build/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

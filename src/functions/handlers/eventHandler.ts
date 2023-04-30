@@ -6,9 +6,9 @@ module.exports = (client: AmagiClient) => {
     if (client.debugMode) {
       console.log(client.debug("DEBUG: ") + `Begin loading events...`);
     }
-    readdirSync("./built/events").forEach((folder) => {
+    readdirSync("./build/events").forEach((folder) => {
       // Get all event files in event subdirectory
-      const eventFiles = readdirSync(`./built/events/${folder}`).filter((file) =>
+      const eventFiles = readdirSync(`./build/events/${folder}`).filter((file) =>
         file.endsWith(".js")
       );
 
