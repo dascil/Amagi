@@ -12,7 +12,9 @@ module.exports = (client: AmagiClient) => {
       const eventFiles = readdirSync(`./build/events/${folder}`).filter((file) =>
         file.endsWith(".js")
       );
-
+      if (client.debugMode) {
+        console.log(client.debug("[DEBUG] ") + `Begin loading ${folder} events...`);
+      }
       // Sets up events based on subdirectorys
       switch (folder) {
         case "client":
@@ -29,7 +31,7 @@ module.exports = (client: AmagiClient) => {
               );
             }
             if (client.debugMode) {
-              console.log(client.debug("DEBUG: ") + `Event ${event.name} has been passed.`);
+              console.log(client.debug("[DEBUG] ") + `Event ${event.name} has been passed.`);
             }
           });
           break;
@@ -47,14 +49,20 @@ module.exports = (client: AmagiClient) => {
                 event.execute(...args, client)
               );
             }
+            if (client.debugMode) {
+              console.log(client.debug("[DEBUG] ") + `Event ${event.name} has been passed.`);
+            }
           });
           break;
 
         default:
           break;
       }
+      if (client.debugMode) {
+        console.log(client.debug("[DEBUG] ") + `Successfully loaded all ${folder} events.`);
+      }
     });
-    console.log(client.success("SUCCESS: ") + "Successfully loaded events.");
+    console.log(client.success("[SUCCESS] ") + "Successfully loaded events.");
   } catch (error) {
     console.log(client.failure("ERROR: ") + "Failed to load events. See error below.");
     console.error(error);

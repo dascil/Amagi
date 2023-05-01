@@ -258,8 +258,8 @@ export default class FetchImage {
    */
   handleError(error: any) {
     const time = new Date().toLocaleTimeString();
-    console.error(chalk.red("ERROR: ") + error.message);
-    console.error(chalk.yellow("TIME OF ERROR: " + time));
+    console.error(chalk.red("[ERROR] ") + error.message);
+    console.error(chalk.yellow("[TIME OF ERROR] " + time));
     console.error(error);
   }
 

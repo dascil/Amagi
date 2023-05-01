@@ -1,6 +1,6 @@
 import AmagiClient from "./instances/classes/client/AmagiClient";
 import { readdirSync } from "fs";
-import { connect } from "mongoose";
+import { databaseConnect } from "./instances/functions/mongo/databaseConnect";
 require("dotenv").config();
 
 const token: string = process.env['TOKEN']!;
@@ -22,9 +22,4 @@ readdirSync("./build/functions").forEach((folder) => {
 client.login(token);
 
 // Establish connection to database server
-(async () => {
-  await connect(dbToken).catch(error => {
-    console.log(client.failure("[ERROR] ") + "Unable to log in to database.");
-    console.error(error);
-  });
-});
+databaseConnect(client);
