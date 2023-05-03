@@ -49,7 +49,7 @@ module.exports = {
     usage: "help {prefix/slash} {command}",
     return: "Returns how to used specified command",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
-        const msg = await interaction.deferReply();
+        await interaction.deferReply();
         let newMsg = "No command found by that name";
         if (interaction.options.getSubcommandGroup() === "prefix") {
             const commandName = interaction.options.getSubcommand();
