@@ -11,7 +11,7 @@ module.exports = {
     name: "podium",
     description: "Reacts with podium emotes to attached photo",
     usage: "podium",
-    return: "Returns podium emote reactions to photo. \n**Requires:** A photo with extension png, jpg, jpeg, or webp.",
+    return: "Returns podium emote reactions to photo. \n**Requires:** A photo with extension png, jpg, jpeg, gif, or webp.",
     cooldown: 10,
     async execute(message: Message, args: Array<string>, client: AmagiClient) {
         if (message.attachments.size >= 1) {
@@ -26,7 +26,7 @@ module.exports = {
                 message.react(react6);
             } else {
                 message.reply({
-                    content: "Attachment is not valid. \nMake sure sure the image uploaded is a jpg, jpeg, png, or webp."
+                    content: "Attachment is not valid. \nMake sure sure the image uploaded is a jpg, jpeg, png, gif, or webp."
                 }).then((reply) => {
                     setTimeout(() => reply.delete(), 5000);
                 }).catch((error) => {
