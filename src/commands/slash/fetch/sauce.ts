@@ -36,7 +36,7 @@ module.exports = {
            Retrieve list of suggested tags for a tag on the specified image board \n \
            **Parameters:** `board` **Required:** True, `tag` **Required:** True",
   async execute(interaction: ChatInputCommandInteraction<CacheType>, client: AmagiClient) {
-    const msg = await interaction.deferReply();
+    await interaction.deferReply();
     let newMsg = STANDARD_ERROR_MSG;
     // Interaction will always come from a channel
     const channel = interaction.channel!;
@@ -56,11 +56,7 @@ module.exports = {
       } else {
         board = BOARDS.YANDERE;
       }
-      // Check max allowed tags
-      let allowed_tag_amount = fetch.maxTags;
-      if (board.name === "danbooru" && sfwRequired) {
-        allowed_tag_amount = 1;
-      }
+
       // Prep tags for usage
       tag = fetch.filterTag(tag);
       const tagList = fetch.getTagList(tag);
@@ -71,8 +67,8 @@ module.exports = {
       } else if (subcommand === "tag") {
         newMsg = await fetch.getTagSuggestions(tagList[0], board, sfwRequired);
       }
-      else if (tagList.length > allowed_tag_amount) {
-        newMsg = TOO_MANY_TAGS_MSG + allowed_tag_amount;
+      else if (tagList.length > board.max_tags) {
+        newMsg = TOO_MANY_TAGS_MSG + board.max_tags;
       } else {
         newMsg = await fetch.getPhoto(tag, tagList, board, sfwRequired);
       }

@@ -10,8 +10,6 @@ import Board from "../../../interfaces/slash/fetch/BoardInterface";
  */
 export default class FetchImage {
   public blacklist: Set<string> = new Set(fetchParams.BLACKLIST);
-  public maxTags: number = fetchParams.MAX_TAGS;
-
   private filter = /[{}<>\[\]/\\+*!?$%&*=~"`;:|]/g;
   private retries: number = fetchParams.FETCH_RETRIES;
   private sfwBlacklist: Set<string> = new Set(fetchParams.SFW_BLACKLIST);

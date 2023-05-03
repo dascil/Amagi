@@ -1,14 +1,16 @@
 import Board from "../../../interfaces/slash/fetch/BoardInterface"
+import fetchParams from "../../../../json/slash/fetch/fetchParameter.json"
 
 export const DANBOORU_BOARD: Board = {
     name: "danbooru",
     image_query: "https://danbooru.donmai.us/posts/random.json?tags=",
     tag_query: "https://danbooru.donmai.us/tags.json?search[order]=count&search[name_matches]=",
     tag_query_wildcard: "*",
-    base_tag: "",
+    base_tag: "-rating:e",
     sfw_base_tag: "rating:g",
     sfw_rating: "g",
-    nsfw_ratings: ["s","q","e"]
+    nsfw_ratings: ["s","q","e"],
+    max_tags: 2
 }
 
 export const GELBOORU_BOARD: Board = {
@@ -19,7 +21,8 @@ export const GELBOORU_BOARD: Board = {
     base_tag: "-rating:explicit",
     sfw_base_tag: "rating:general",
     sfw_rating: "general",
-    nsfw_ratings: ["questionable","suggestive","explicit"]
+    nsfw_ratings: ["questionable","suggestive","explicit"],
+    max_tags: fetchParams.MAX_TAGS
 }
 
 export const YANDERE_BOARD: Board = {
@@ -30,7 +33,8 @@ export const YANDERE_BOARD: Board = {
     base_tag: "-rating:e",
     sfw_base_tag: "rating:s",
     sfw_rating: "g",
-    nsfw_ratings: ["q","e"]
+    nsfw_ratings: ["q","e"],
+    max_tags: fetchParams.MAX_TAGS
 }
 
 export default {

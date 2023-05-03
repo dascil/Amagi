@@ -7,4 +7,5 @@ export default interface Board {
     sfw_base_tag: string,
     sfw_rating: string,
     nsfw_ratings: Array<string>,
+    max_tags: number
 }
