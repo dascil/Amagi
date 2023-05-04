@@ -1,6 +1,6 @@
 import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../json/slash/fetch/fetchErrors.json";
 import { DanbooruImageObject, GelbooruImageObject, YandereImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
-import botParams from "../../../../json/config.json";
+import { SFW } from "../../../../json/config.json";
 import fetchParams from "../../../../json/slash/fetch/fetchParameter.json"
 import chalk from "chalk";
 import Board from "../../../interfaces/slash/fetch/BoardInterface";
@@ -15,7 +15,6 @@ export default class FetchImage {
   private sfwBlacklist: Set<string> = new Set(fetchParams.SFW_BLACKLIST);
   private sfwBlacklistFullTag: Set<string> = new Set(fetchParams.FULL_TAG_FILTER);
   private sfwTagFilter: Set<string> = new Set(fetchParams.TAG_FILTER);
-  private trustUser: boolean = botParams.TRUST_USER;
 
   /**
    * Filters a user's input for potentially malicous characters
@@ -59,7 +58,7 @@ export default class FetchImage {
     let photo: DanbooruImageObject | GelbooruImageObject | YandereImageObject | null = null;
     try {
       do {
-        let jsonObj = await fetch(url);
+        const jsonObj = await fetch(url);
         // Not OK status occured during fetch request
         if (!jsonObj.ok) {
           // A definite error for any board that is not Danbooru
@@ -70,7 +69,7 @@ export default class FetchImage {
           validTag = false;
           message = await this.danbooruNotOKStatus(jsonObj, board, tagList, sfwRequired);
         } else {
-          let imageObj = await jsonObj.json();
+          const imageObj = await jsonObj.json();
           // One or more tags does not exist on Gelbooru or Yandere
           if ((board.name === "gelbooru" && !imageObj.post) ||
             (board.name === "yandere" && imageObj instanceof Array && imageObj.length === 0)) {
@@ -146,10 +145,6 @@ export default class FetchImage {
         }
       }
       // Change return message based on bot configurations
-      let tagMsg = `**${tag}**`;
-      if (!this.trustUser) {
-        tagMsg = "Tag";
-      }
 
       returnMsg = "";
       if (sfwRequired) {
@@ -157,9 +152,9 @@ export default class FetchImage {
       }
 
       if (goodTags.length === 0) {
-        returnMsg = `${tagMsg} does not exist. Remove some letters/symbols and try again.${returnMsg}`;
+        returnMsg = `This tag does not exist. Remove some letters/symbols and try again.${returnMsg}`;
       } else {
-        returnMsg = `These are some tags similar to ${tagMsg.toLowerCase()}:\n` + goodTags.join("\n");
+        returnMsg = "These are some similar tags:\n" + goodTags.join("\n");
       }
     } catch (error) {
       this.handleError(error);
