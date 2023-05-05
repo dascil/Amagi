@@ -1,14 +1,29 @@
 require("dotenv").config;
-const prefix = process.env["PREFIX"]!;
 import { Collection, Message } from "discord.js";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
+import GuildModel from "../../schemas/guild";
+const defaultPrefix = process.env["PREFIX"]!;
 
 
 module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message: Message, client: AmagiClient) {
-    if (!message.content.startsWith(prefix) || message.author.bot) {
+    let prefix = null;
+    try {
+      const query = await GuildModel.findOne({guildID:message.guildId});
+      if (query) {
+        prefix = query.prefix;
+      } else {
+        const newGuild = new GuildModel({guildID:message.guildId});
+        await newGuild.save();
+        prefix = defaultPrefix;
+      }
+    } catch (error) {
+      console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
+      return;
+    }
+    if (!prefix || !message.content.startsWith(prefix) || message.author.bot) {
       return;
     }
 

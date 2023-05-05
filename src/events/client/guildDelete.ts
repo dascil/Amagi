@@ -6,11 +6,9 @@ module.exports = {
     name: "guildDelete",
     once: false,
     async execute(guild: Guild, client: AmagiClient) {
-        const id = guild.id;
-        // Add new guild to database with default configurations
+        // Deletes guild from database upon guild removing bot from server
         try {
-            // Adds the guild to the database if the guild does not exist
-            await GuildModel.deleteOne({guildID:id});
+            await GuildModel.deleteOne({guildID: guild.id});
         } catch (error) {
             console.log(client.failure("[ERROR] ") + "There was a problem during the guildDelete event.");
             console.error(error);

@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
-const prefix = process.env["PREFIX"]!;
+import GuildModel from "../../../schemas/guild"
+const defaultPrefix = process.env["PREFIX"];
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -50,19 +51,35 @@ module.exports = {
     return: "Returns how to used specified command",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         await interaction.deferReply();
+        let prefix = null;
         let newMsg = "No command found by that name";
-        if (interaction.options.getSubcommandGroup() === "prefix") {
-            const commandName = interaction.options.getSubcommand();
-            const command = client.prefixCommands.get(commandName);
-            if (command !== undefined) {
-                newMsg = `**Usage:** \`${prefix}${command.usage}\`\n${command.return}`
+        try {
+            const query = await GuildModel.findOne({ guildID: interaction.guildId });
+            if (query) {
+                prefix = query.prefix;
+            } else {
+                const newGuild = new GuildModel({ guildID: interaction.guildId });
+                await newGuild.save();
+                prefix = defaultPrefix;
             }
-        } else {
-            const commandName = interaction.options.getSubcommand();
-            const command = client.slashCommands.get(commandName);
-            if (command !== undefined) {
-                if (commandName )
-                newMsg = `**Usage:** \`/${command.usage}\`\n${command.return}`
+        } catch (error) {
+            console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
+            newMsg = "There was a problem reaching our servers. Please try again later."
+        }
+        if (prefix) {
+            if (interaction.options.getSubcommandGroup() === "prefix") {
+                const commandName = interaction.options.getSubcommand();
+                const command = client.prefixCommands.get(commandName);
+                if (command !== undefined) {
+                    newMsg = `**Usage:** \`${prefix}${command.usage}\`\n${command.return}`
+                }
+            } else {
+                const commandName = interaction.options.getSubcommand();
+                const command = client.slashCommands.get(commandName);
+                if (command !== undefined) {
+                    if (commandName)
+                        newMsg = `**Usage:** \`/${command.usage}\`\n${command.return}`
+                }
             }
         }
         await interaction.editReply({
