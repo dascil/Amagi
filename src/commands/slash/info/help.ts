@@ -67,6 +67,17 @@ module.exports = {
             newMsg = "There was a problem reaching our servers. Please try again later."
         }
         if (prefix) {
+            try {
+                const query = await GuildModel.findOneAndUpdate({guildID: interaction.guildId}, {$setOnInsert: {guildID: interaction.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
+                if (query) {
+                  prefix = query.prefix;
+                } else {
+                  throw new Error("No query returned in messagecreate event.");
+                }
+              } catch (error) {
+                console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
+                return;
+              }
             if (interaction.options.getSubcommandGroup() === "prefix") {
                 const commandName = interaction.options.getSubcommand();
                 const command = client.prefixCommands.get(commandName);

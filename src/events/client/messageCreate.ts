@@ -2,8 +2,6 @@ require("dotenv").config;
 import { Collection, Message } from "discord.js";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
 import GuildModel from "../../schemas/guild";
-const defaultPrefix = process.env["PREFIX"]!;
-
 
 module.exports = {
   name: "messageCreate",
@@ -11,13 +9,11 @@ module.exports = {
   async execute(message: Message, client: AmagiClient) {
     let prefix = null;
     try {
-      const query = await GuildModel.findOne({guildID:message.guildId});
+      const query = await GuildModel.findOneAndUpdate({guildID: message.guildId}, {$setOnInsert: {guildID: message.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
       if (query) {
         prefix = query.prefix;
       } else {
-        const newGuild = new GuildModel({guildID:message.guildId});
-        await newGuild.save();
-        prefix = defaultPrefix;
+        throw new Error("No query returned in messagecreate event.");
       }
     } catch (error) {
       console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")

@@ -1,6 +1,5 @@
 import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../json/slash/fetch/fetchErrors.json";
 import { DanbooruImageObject, GelbooruImageObject, YandereImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
-import { SFW } from "../../../../json/config.json";
 import fetchParams from "../../../../json/slash/fetch/fetchParameter.json"
 import chalk from "chalk";
 import Board from "../../../interfaces/slash/fetch/BoardInterface";

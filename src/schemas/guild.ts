@@ -1,10 +1,11 @@
 import {Schema, model} from "mongoose"
+import { SFW, PREFIX, DENYLIST } from "../json/default.json"
 
 const guildSchema = new Schema({
     guildID: String,
-    prefix: { type: String, default:"!"},
-    sfw: { type: Boolean, default: false },
-    denyList: { type: Array<String>, default: []}
+    prefix: { type: String, default: PREFIX},
+    sfw: { type: Boolean, default: SFW },
+    denyList: { type: Array<String>, default: DENYLIST}
 });
 
 export default model("Guild", guildSchema, "guilds");

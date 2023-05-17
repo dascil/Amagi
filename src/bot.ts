@@ -4,7 +4,6 @@ import { databaseConnect } from "./instances/functions/mongo/databaseConnect";
 require("dotenv").config();
 
 const token: string = process.env['TOKEN']!;
-const dbToken: string = process.env['DB_TOKEN']!;
 
 // Create new client
 const client = new AmagiClient();

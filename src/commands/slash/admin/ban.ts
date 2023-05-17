@@ -28,6 +28,7 @@ module.exports = {
         const choice = interaction.options.getString("choice")!;
         const user = interaction.options.getUser("user")!;
         let newMsg = `There was a problem with ${choice}ning the user.`
+        // Bans/Unbans a user and checks if existing records exist in database
         if (interaction.guild) {
             try {
                 if (choice === "ban") {

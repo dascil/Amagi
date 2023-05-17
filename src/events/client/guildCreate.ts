@@ -7,13 +7,10 @@ module.exports = {
     once: false,
     async execute(guild: Guild, client: AmagiClient) {
         const id = guild.id;
-        // Add new guild to database with default configurations
-        const newGuild= new GuildModel({guildID: id});
         try {
-            // Adds the guild to the database if the guild does not exist
-            const existing = await GuildModel.findOne({guildID: id});
-            if (!existing) {
-                await newGuild.save();
+            const query = await GuildModel.findOneAndUpdate({guildID: id}, {$setOnInsert: {guildID: id}}, { upsert: true, new: true, setDefaultsOnInsert: true });
+            if (!query) {
+              throw new Error("No query returned in guildcreate event.");
             }
         } catch (error) {
             console.log(client.failure("[ERROR] ") + "There was a problem during the guildCreate event.");

@@ -3,7 +3,7 @@ import { BAD_TAG_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../jso
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
 import Board from "../../../instances/interfaces/slash/fetch/BoardInterface";
 import BOARDS from "../../../instances/objects/slash/fetch/ImageBoards";
-import { SFW } from "../../../json/config.json"
+import { SFW } from "../../../json/default.json"
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("sauce")
