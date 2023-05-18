@@ -1,5 +1,5 @@
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
-import { DEBUG } from "../../../json/config.json";
+import { DEBUG } from "../../../json/default.json";
 import chalk from "chalk";
 import { PrefixCommand, SlashCommand } from "../../interfaces/client/CommandInterface";
 import FetchImage from "../slash/fetch/FetchImage";

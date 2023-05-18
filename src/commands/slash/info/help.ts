@@ -54,30 +54,17 @@ module.exports = {
         let prefix = null;
         let newMsg = "No command found by that name";
         try {
-            const query = await GuildModel.findOne({ guildID: interaction.guildId });
+            const query = await GuildModel.findOneAndUpdate({guildID: interaction.guildId}, {$setOnInsert: {guildID: interaction.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
             if (query) {
                 prefix = query.prefix;
             } else {
-                const newGuild = new GuildModel({ guildID: interaction.guildId });
-                await newGuild.save();
-                prefix = defaultPrefix;
+                newMsg = "Unable to find prefix";
             }
         } catch (error) {
-            console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
-            newMsg = "There was a problem reaching our servers. Please try again later."
+            console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.");
+            console.error(error);
         }
         if (prefix) {
-            try {
-                const query = await GuildModel.findOneAndUpdate({guildID: interaction.guildId}, {$setOnInsert: {guildID: interaction.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
-                if (query) {
-                  prefix = query.prefix;
-                } else {
-                  throw new Error("No query returned in messagecreate event.");
-                }
-              } catch (error) {
-                console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
-                return;
-              }
             if (interaction.options.getSubcommandGroup() === "prefix") {
                 const commandName = interaction.options.getSubcommand();
                 const command = client.prefixCommands.get(commandName);
