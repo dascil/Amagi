@@ -1,8 +1,7 @@
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
-import { DEBUG } from "../../../json/default.json";
-import chalk from "chalk";
 import { PrefixCommand, SlashCommand } from "../../interfaces/client/CommandInterface";
 import FetchImage from "../slash/fetch/FetchImage";
+import chalk from "chalk";
 
 export default class AmagiClient extends Client {
 
@@ -31,7 +30,7 @@ export default class AmagiClient extends Client {
 
             partials: [Partials.Channel]
         });
-        this.debugMode = DEBUG;
+        this.debugMode = process.argv.length === 3 && process.argv[2] === "debug"? true : false;
         this.success = chalk.green;
         this.warning = chalk.yellow;
         this.failure = chalk.red;

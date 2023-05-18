@@ -4,7 +4,11 @@
   "description": "Discord bot for personal server",
   "main": "./build/bot.js",
   "scripts": {
-    "test": "npx tsc && node ."
+    "build": "npx tsc",
+    "build-start": "npx tsc && node .",
+    "build-start-debug": "npx tsc && node . debug",
+    "start": "node .",
+    "start-debug": "node . debug"
   },
   "keywords": [
     "discord",

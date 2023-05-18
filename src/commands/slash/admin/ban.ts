@@ -37,14 +37,12 @@ module.exports = {
                         { $addToSet: {denyList: user.id} },
                         { upsert: true, new: true, setDefaultsOnInsert: true }
                     );
-                    console.log(result);
                 } else {
                     const result = await GuildModel.findOneAndUpdate(
                         { guildID: interaction.guildId },
                         { $pull: {denyList: user.id} },
                         { upsert: true, new: true, setDefaultsOnInsert: true }
                     );
-                    console.log(result);
                 }
                 newMsg = `${user.username} has been ${choice}ned from this bot.`
             } catch (error) {
