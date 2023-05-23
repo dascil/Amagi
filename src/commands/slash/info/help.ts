@@ -1,82 +1,58 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
 import GuildModel from "../../../schemas/guild"
-const defaultPrefix = process.env["PREFIX"];
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
         .setDescription('Explains Return my ping!')
-        .addSubcommandGroup(group => group
-            .setName("prefix")
-            .setDescription("Manual for prefix commands")
-            .addSubcommand(command => command
-                .setName("lr")
-                .setDescription("Manual for prefix ping command")
-            )
-            .addSubcommand(command => command
-                .setName("ping")
-                .setDescription("Manual for prefix ping command")
-            )
-            .addSubcommand(command => command
-                .setName("podium")
-                .setDescription("Manual for prefix podium command")
-            )
+        .addStringOption(option => option
+            .setName("type")
+            .setDescription("Type of command to search")
+            .setRequired(true)
+            .addChoices({ name: "prefix", value: "prefix" }, { name: "slash", value: "slash" })
         )
-        .addSubcommandGroup(group => group
-            .setName("slash")
-            .setDescription("Manual for slash commands")
-            .addSubcommand(command => command
-                .setName("help")
-                .setDescription("Manual for slash help command")
-            )
-            .addSubcommand(command => command
-                .setName("lr")
-                .setDescription("Manual for slash lr command")
-            )
-            .addSubcommand(command => command
-                .setName("ping")
-                .setDescription("Manual for slash ping command")
-            )
-            .addSubcommand(command => command
-                .setName("podium")
-                .setDescription("Manual for slash podium command")
-            )
-            .addSubcommand(command => command
-                .setName("sauce")
-                .setDescription("Manual for slash sauce command")
-            )
+        .addStringOption(option => option
+            .setName("command")
+            .setDescription("Command to look up usage of")
+            .setRequired(true)
         ),
     usage: "help {prefix/slash} {command}",
     return: "Returns how to used specified command",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         await interaction.deferReply();
-        let prefix = null;
-        let newMsg = "No command found by that name";
-        try {
-            const query = await GuildModel.findOneAndUpdate({guildID: interaction.guildId}, {$setOnInsert: {guildID: interaction.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
-            if (query) {
-                prefix = query.prefix;
-            } else {
-                newMsg = "Unable to find prefix";
-            }
-        } catch (error) {
-            console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.");
-            console.error(error);
-        }
-        if (prefix) {
-            if (interaction.options.getSubcommandGroup() === "prefix") {
-                const commandName = interaction.options.getSubcommand();
-                const command = client.prefixCommands.get(commandName);
-                if (command !== undefined) {
-                    newMsg = `**Usage:** \`${prefix}${command.usage}\`\n${command.return}`
+
+        let newMsg = "Commands can only be done in servers.";
+        if (interaction.guildId) {
+            let prefix = null;
+            newMsg = "No command was found found by that name.";
+            // Gets server's prefix or add default prefix if guild does not exist in server
+            try {
+                const query = await GuildModel.findOneAndUpdate(
+                    { guildID: interaction.guildId },
+                    { $setOnInsert: { guildID: interaction.guildId } },
+                    { upsert: true, new: true, setDefaultsOnInsert: true }
+                );
+                if (query) {
+                    prefix = query.prefix;
+                } else {
+                    newMsg = "There was a problem accessing the database.\n Please try again later.";
                 }
-            } else {
-                const commandName = interaction.options.getSubcommand();
-                const command = client.slashCommands.get(commandName);
+            } catch (error) {
+                console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.");
+                console.error(error);
+                newMsg = "Unable to access database at this time.\nPlease try again later.";
+            }
+            // Only continues command if server configurations are in database.
+            if (prefix) {
+                // Returns command usage if command exists
+                const commandType = interaction.options.getString("type", true);
+                const commandName = interaction.options.getString("command", true).toLowerCase();
+                const commandPrefix = commandType === "prefix" ? prefix : "/";
+                const command = commandType === "prefix" ? client.prefixCommands.get(commandName) : client.slashCommands.get(commandName);
+
                 if (command !== undefined) {
-                    if (commandName)
-                        newMsg = `**Usage:** \`/${command.usage}\`\n${command.return}`
+                    newMsg = `**Usage:** \`${commandPrefix}${command.usage}\`\n${command.return}`
                 }
             }
         }
