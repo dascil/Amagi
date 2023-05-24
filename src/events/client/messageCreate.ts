@@ -1,5 +1,5 @@
 require("dotenv").config;
-import { Collection, Message, PermissionsBitField } from "discord.js";
+import { Collection, Message } from "discord.js";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
 import GuildModel from "../../schemas/guild";
 
