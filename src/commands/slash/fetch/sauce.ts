@@ -40,7 +40,11 @@ module.exports = {
     let newMsg = STANDARD_ERROR_MSG;
     let sfw = null;
     try {
-      const query = await GuildModel.findOneAndUpdate({ guildID: interaction.guildId }, { $setOnInsert: { guildID: interaction.guildId } }, { upsert: true, new: true, setDefaultsOnInsert: true });
+      const query = await GuildModel.findOneAndUpdate(
+        { guildID: interaction.guildId },
+        { $setOnInsert: { guildID: interaction.guildId } },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
       if (query) {
         sfw = query.sfw;
       } else {
@@ -76,7 +80,7 @@ module.exports = {
         // Looks for disallowed terms
         if (tag.length === 0 || fetch.containsBadTag(tag, sfwRequired)) {
           newMsg = BAD_TAG_MSG;
-          if (sfwRequired) newMsg += "\nOr, try again on a NSFW channel."
+          if (sfwRequired && !sfw) newMsg += "\nOr, try again on a NSFW channel."
         } else if (subcommand === "tag") {
           newMsg = await fetch.getTagSuggestions(tagList[0], board, sfwRequired);
         }
