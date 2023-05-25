@@ -15,8 +15,9 @@ A personal bot for your discord server. Handles both slash and prefix commands.
 # Requirements
 
 [Node.js](https://nodejs.org/) v18.0.0 or higher \
-[Docker](https://www.docker.com/products/docker-desktop/) v20.10.0 or higher (Optional) \
-[MongoDB](https://www.mongodb.com/) v6.0.0 or higher
+[MongoDB](https://www.mongodb.com/) v6.0.0 or higher \
+[Docker](https://www.docker.com/products/docker-desktop/) v20.10.0 or higher (Optional)
+
 
 # Features
 
