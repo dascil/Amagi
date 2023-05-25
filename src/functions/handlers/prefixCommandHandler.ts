@@ -4,7 +4,7 @@ import AmagiClient from "../../instances/classes/client/AmagiClient";
 module.exports = async (client: AmagiClient) => {
   try {
     if (client.debugMode) {
-      console.log(client.debug("DEBUG: ") + "Begin loading prefix commands...");
+      console.log(client.debug("[DEBUG] ") + "Begin loading prefix commands...");
     }
     readdirSync("./build/commands/prefix").forEach((folder) => {
       // Get all slash script files in slash subdirectory
@@ -18,18 +18,18 @@ module.exports = async (client: AmagiClient) => {
         const command = require(`../../commands/prefix/${folder}/${file}`);
         prefixCommands.set(command.name, command);
         if (client.debugMode) {
-          console.log(client.debug("DEBUG: ") + `Prefix command ${command.name} has been passed.`);
+          console.log(client.debug("[DEBUG] ") + `Prefix command ${command.name} has been passed.`);
         }
       });
 
     });
     console.log(
-      client.success("SUCCESS: ") +
+      client.success("[SUCCESS] ") +
         "Successfully loaded prefix commands."
     );
   } catch (error) {
     console.log(
-      client.failure("ERROR: ") +
+      client.failure("[ERROR] ") +
         "Failed to load prefix commands. See error below."
     );
     console.error(error);

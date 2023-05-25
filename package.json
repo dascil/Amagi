@@ -1,10 +1,14 @@
 {
   "name": "amagi",
-  "version": "1.4.2",
+  "version": "2.0.0",
   "description": "Discord bot for personal server",
   "main": "./build/bot.js",
   "scripts": {
-    "test": "npx tsc && node ."
+    "build": "npx tsc",
+    "build-start": "npx tsc && node .",
+    "build-start-debug": "npx tsc && node . debug",
+    "start": "node .",
+    "start-debug": "node . debug"
   },
   "keywords": [
     "discord",
@@ -18,6 +22,7 @@
     "discord-api-types": "^0.37.37",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
+    "mongoose": "^7.1.1",
     "typescript": "^5.0.4"
   }
 }

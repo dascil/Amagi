@@ -1,5 +1,6 @@
 import { Interaction, Collection } from "discord.js";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
+import GuildModel from "../../schemas/guild"
 
 module.exports = {
   name: "interactionCreate",
@@ -19,7 +20,31 @@ module.exports = {
         cooldowns.set(command.data.name, new Collection());
       }
 
+      if (!interaction.inGuild()) {
+        return await interaction.reply({
+          content: "Command must be used inside of guild",
+        });
+      }
 
+      let query = null;
+      try {
+        query = await GuildModel.findOneAndUpdate({guildID: interaction.guildId}, {$setOnInsert: {guildID: interaction.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
+        if (!query) {
+          throw new Error("No query returned in interactionCreate event.");
+        }
+      } catch (error) {
+        console.log(client.failure("[ERROR] ") + "There was an error accessing database within interactionCreate event.")
+        return await interaction.reply({
+          content: "Command must be used inside of guild",
+        });
+      }
+
+    if (Array.isArray(query.denyList) && query.denyList.includes(interaction.user.id)) {
+      return await interaction.reply({
+        content: "You are currently banned from the bot. Please contact your guild's moderator or admin.",
+        ephemeral: true,
+      });
+    }
       // Get time
       const now = Date.now();
       const timestamps = cooldowns.get(command.data.name)!;
@@ -34,7 +59,7 @@ module.exports = {
 
         if (now < expirationTime) {
           const expiredTimestamp = Math.round(expirationTime / 1000);
-          return interaction.reply({
+            return await interaction.reply({
             content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
             ephemeral: true,
           }).then((reply) => {

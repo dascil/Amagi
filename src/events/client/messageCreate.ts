@@ -1,17 +1,37 @@
 require("dotenv").config;
-const prefix = process.env["PREFIX"]!;
 import { Collection, Message } from "discord.js";
 import AmagiClient from "../../instances/classes/client/AmagiClient";
-
+import GuildModel from "../../schemas/guild";
 
 module.exports = {
   name: "messageCreate",
   once: false,
   async execute(message: Message, client: AmagiClient) {
-    if (!message.content.startsWith(prefix) || message.author.bot) {
+    let prefix = null;
+    let query = null;
+
+    if (!message.inGuild()) return;
+
+    // Get server configurations for guild or sets default configurations if it does not exist
+    try {
+      query = await GuildModel.findOneAndUpdate({guildID: message.guildId}, {$setOnInsert: {guildID: message.guildId}}, { upsert: true, new: true, setDefaultsOnInsert: true });
+      if (query) {
+        prefix = query.prefix;
+      } else {
+        throw new Error("No query returned in messagecreate event.");
+      }
+    } catch (error) {
+      console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.")
+      return;
+    }
+    // Does not execute command if prefix is not used, user is a bot, or the user is banned
+    if (!prefix || !message.content.startsWith(prefix) || message.author.bot) {
+      return;
+    } else if (Array.isArray(query.denyList) && query.denyList.includes(message.author.id)) {
       return;
     }
 
+    // Get the potential command
     const args = message.content.slice(prefix.length).trim().split(" ");
     const command = args.shift()!.toLowerCase();
 

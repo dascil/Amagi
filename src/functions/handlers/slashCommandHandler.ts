@@ -11,7 +11,7 @@ module.exports = async (client: AmagiClient) => {
   try {
     let commandArray: Object[] = [];
     if (client.debugMode) {
-      console.log(client.debug("DEBUG: ") + "Begin loading slash commands...");
+      console.log(client.debug("[DEBUG] ") + "Begin loading slash commands...");
     }
     readdirSync("./build/commands/slash").forEach((folder) => {
       // Get all slash script files in slash subdirectory
@@ -27,7 +27,7 @@ module.exports = async (client: AmagiClient) => {
         slashCommands.set(command.data.name, command);
         commandArray.push(command.data.toJSON());
         if (client.debugMode) {
-          console.log(client.debug("DEBUG: ") + `Slash command ${command.data.name} has been passed.`);
+          console.log(client.debug("[DEBUG] ") + `Slash command ${command.data.name} has been passed.`);
         }
       });
     });
@@ -40,11 +40,11 @@ module.exports = async (client: AmagiClient) => {
       body: commandArray,
     })
 
-    console.log(client.success("SUCCESS: ") + "Successfully loaded slash commands.");
+    console.log(client.success("[SUCCESS] ") + "Successfully loaded slash commands.");
 
   } catch (error) {
     console.log(
-      client.failure("ERROR: ") +
+      client.failure("[ERROR] ") +
       "Failed to load slash commands. See error below."
     );
     console.error(error);
