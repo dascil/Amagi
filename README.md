@@ -15,52 +15,36 @@ A personal bot for your discord server. Handles both slash and prefix commands.
 # Requirements
 
 [Node.js](https://nodejs.org/) v18.0.0 or higher \
-[Docker](https://www.docker.com/products/docker-desktop/) v20.10.0 or higher (Optional)
+[Docker](https://www.docker.com/products/docker-desktop/) v20.10.0 or higher (Optional) \
+[MongoDB](https://www.mongodb.com/) v6.0.0 or higher
 
 # Features
 
-## Slash Commands
-
-- Information commands such as bot ping
-  - Custom emotes are provided within images folder
-  - Game commands podium and lr that reacts to photos
-    - Accepts URL links to photos or attachments
-    - Only accepts photos with the extensions `png`, `jpg`, `jpeg`, and `webp`
+- Slash and Prefix Command
 - Fetch command to retrieve photo from image boards like danbooru and yandere
   - If tags are invalid, it will return a list of similar tags
   - Tag command to look up on specified boards
-
-## Prefix Commands
-
-- Information commands such as bot ping
-- Game commands podium and lr that reacts to photos
-  - Only accepts attachments
-  - Only accepts photos with the extensions `png`, `jpg`, `jpeg`, and `webp`
-  - Custom emotes are provided within images folder
-
-## Other features
 - Color-coded console information
-- Command Cooldown for both prefix and slash commands
-  - Sends reply if command is on cooldown
-  - Message self-deletes after a certain amount of time
+- Command cooldown
+- Custom configurations for each server
 
 # Configurations
-Configurations can be found in `./src/json/config.json`
-- DEBUG (default: `false`) Logs start-up information
+Default configurations for servers can be found in `./src/json/default.json`
+- PREFIX (default: `!`) Prefix used for prefix commands
+- DENYLIST (default: `[]`) List of users banned from using bot
+  - Cannot ban admins
 - SFW (default: `false`) Forces image board commands to only retrieve SFW photos (by image board standards)
   - Filters out potentially NSFW tags
-  - When `false`, NSFW photos and tags can show up only on NSFW channels.
-- TRUST_USER (default: `false`) Echoes user's input in certain commands for a clearer message
+  - When `false`, NSFW photos and tags will show up only on NSFW channels.*
 
 # Set-up Guide
 
 - Download or clone the repo
 - In the terminal, run `npm install` to download the necessary packages
-- Upload load the lr and podium emotes to your bot's discord server
+- Set-up MongoDB server using Atlas or some other hosting method
 - Create a `.env` file and get the necessary values that are in the `.env.example` file
 - Change the configurations if needed
-- Build the JavaScript files by typing `npx tsc` in the terminal
-- In the terminal, run `node .`
+- Build and run the bot by typing `npm run build-start` in the terminal
 - If you want to use Docker:
   - In the terminal inde docker directory, use the command `docker build . -t {insert-name-here}`
   - In the same terminal, use the command `docker run {insert-name-here's id}`
@@ -72,7 +56,7 @@ Configurations can be found in `./src/json/config.json`
 
 # Legal
 
-The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, and **not** Discord's guideline; though, both of their guidelines should overlap well.
+*The SFW configuration only ensures the photos being retreived are safe for work by the image board's guideline, and **not** Discord's guideline; though, both of their guidelines should overlap well.
 To ensure no explicit content is displayed (bad tagging on image boards), make sure to turn on the explicit filter on discord.
 
 Our SFW tag filter should be able to catch the majority of the NSFW tags from being reccommended. If you do find a NSFW tag that avoided the filter, please let us know.
