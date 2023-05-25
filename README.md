@@ -2,9 +2,9 @@
     <img src="https://i.imgur.com/2UYP5YC.png" width=1000px>
     <hr>
     <div>
-        <img src="https://img.shields.io/github/v/release/zach-dascil/amagi">
+        <img src="https://img.shields.io/github/v/release/dascil/amagi">
         <img src="https://img.shields.io/badge/discord.js-v14-purple">
-        <img src="https://img.shields.io/github/license/zach-dascil/Amagi">
+        <img src="https://img.shields.io/github/license/dascil/Amagi">
     </div>
 </div>
 
