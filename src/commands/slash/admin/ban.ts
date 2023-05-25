@@ -30,7 +30,7 @@ module.exports = {
         let newMsg = "User does not exist.";
         if (user) {
             newMsg = `There was a problem with ${choice}ning the user.`
-            // Bans/Unbans a user and checks if existing records exist in database
+
             if (interaction.guild) {
                 newMsg = "An admin cannot be banned from a bot."
                 let guildMember;
@@ -39,6 +39,8 @@ module.exports = {
                 } catch (error) {
                     console.log("User not found");
                     console.log(error);
+                // Bans/Unbans a user and checks if existing records exist in database
+                // Edge case added in case user is banned but, is later promoted to admin
                 } if (guildMember && !guildMember.permissionsIn(interaction.channelId).has(PermissionsBitField.All) || choice === "unban") {
                     try {
                         if (choice === "ban") {

@@ -51,7 +51,7 @@ module.exports = {
         newMsg = "Unable to find server settings";
       }
     } catch (error) {
-      console.log(client.failure("[ERROR] ") + "Unable to get prefix from database.");
+      console.log(client.failure("[ERROR] ") + "Unable to get information from database.");
       console.error(error);
     }
     if (sfw !== null) {
