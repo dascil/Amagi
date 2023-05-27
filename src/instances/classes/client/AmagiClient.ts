@@ -1,7 +1,7 @@
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 import { PrefixCommand, SlashCommand } from "../../interfaces/client/CommandInterface";
-import FetchImage from "../slash/fetch/FetchImage";
 import chalk from "chalk";
+import BooruHub from "../slash/fetch/BooruHub";
 
 export default class AmagiClient extends Client {
 
@@ -17,7 +17,7 @@ export default class AmagiClient extends Client {
     public debug: chalk.Chalk;
 
     public debugMode: Boolean;
-    public fetch: FetchImage;
+    public booru: BooruHub;
 
     constructor() {
         super({
@@ -39,6 +39,6 @@ export default class AmagiClient extends Client {
         this.prefixCommands = new Collection();
         this.cooldowns = new Collection();
         this.prefixCooldowns = new Collection();
-        this.fetch = new FetchImage();
+        this.booru = new BooruHub()
     }
 }
