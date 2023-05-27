@@ -41,7 +41,7 @@ module.exports = {
                     console.log(error);
                 // Bans/Unbans a user and checks if existing records exist in database
                 // Edge case added in case user is banned but, is later promoted to admin
-                } if (guildMember && !guildMember.permissionsIn(interaction.channelId).has(PermissionsBitField.All) || choice === "unban") {
+                } if (guildMember && (!guildMember.permissionsIn(interaction.channelId).has(PermissionsBitField.All) || choice === "unban")) {
                     try {
                         if (choice === "ban") {
                             const result = await GuildModel.findOneAndUpdate(
