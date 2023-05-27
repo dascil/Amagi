@@ -1,5 +1,5 @@
-import { DanbooruImageObject, GelbooruImageObject, YandereImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
-import { FETCH_RETRIES } from "../../../../json/slash/fetch/fetchParameter.json"
+import { DanbooruImageObject, GelbooruImageObject, YandereImageObject } from "../../../../interfaces/slash/fetch/ImageInterface";
+import { FETCH_RETRIES } from "../../../../../json/slash/fetch/fetchParameter.json"
 import chalk from "chalk";
 import TagFilter from "./TagFilter";
 

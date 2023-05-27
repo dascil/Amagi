@@ -1,9 +1,9 @@
-import TagFilter from "./TagFilter";
-import Danbooru from "./Danbooru"
-import Gelbooru from "./Gelbooru";
-import Yandere from "./Yandere";
+import TagFilter from "./sauce/TagFilter";
+import Danbooru from "./sauce/Danbooru"
+import Gelbooru from "./sauce/Gelbooru";
+import Yandere from "./sauce/Yandere";
 
-export default class BooruHub extends TagFilter{
+export default class Sauce extends TagFilter{
     public danbooru: Danbooru;
     public gelbooru: Gelbooru;
     public yandere: Yandere

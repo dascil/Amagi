@@ -1,12 +1,12 @@
-import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../json/slash/fetch/fetchErrors.json";
-import { YandereImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
-import { YANDERE_BOARD } from "../../../objects/slash/fetch/ImageBoards";
+import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../../json/slash/fetch/fetchErrors.json";
+import { GelbooruImageObject } from "../../../../interfaces/slash/fetch/ImageInterface";
+import { GELBOORU_BOARD } from "../../../../objects/slash/fetch/ImageBoards";
 import Booru from "./Booru";
 
 /**
  * Fetch object for all image board commands
  */
-export default class Yandere extends Booru {
+export default class Gelbooru extends Booru {
     /**
      * Get photo from the image board
      * @async
@@ -15,14 +15,14 @@ export default class Yandere extends Booru {
      * @returns {Promise<string>} Message containing image URL or error message.
      */
 
-    imageUrl: string = YANDERE_BOARD.image_query;
-    imageBaseTag: string = YANDERE_BOARD.base_tag;
-    imageSfwTag: string = YANDERE_BOARD.sfw_base_tag;
-    imageSfwRating: string = YANDERE_BOARD.sfw_rating;
-    imageNsfwRatings: Array<string> = YANDERE_BOARD.nsfw_ratings;
-    tagBaseUrl: string = YANDERE_BOARD.tag_query;
-    tagWildcard: string = YANDERE_BOARD.tag_query_wildcard;
-    maxTags: number = YANDERE_BOARD.max_tags;
+    imageUrl: string = GELBOORU_BOARD.image_query;
+    imageBaseTag: string = GELBOORU_BOARD.base_tag;
+    imageSfwTag: string = GELBOORU_BOARD.sfw_base_tag;
+    imageSfwRating: string = GELBOORU_BOARD.sfw_rating;
+    imageNsfwRatings: Array<string> = GELBOORU_BOARD.nsfw_ratings;
+    tagBaseUrl: string = GELBOORU_BOARD.tag_query;
+    tagWildcard: string = GELBOORU_BOARD.tag_query_wildcard;
+    maxTags: number = GELBOORU_BOARD.max_tags;
 
     async getPhoto(tag: string, tagList: Array<string>, sfwRequired: boolean): Promise<string> {
         let message = STANDARD_ERROR_MSG;
@@ -33,7 +33,7 @@ export default class Yandere extends Booru {
         let interval = 0;
         let validTag = true;
         let photoFound = false;
-        let photo: YandereImageObject | null = null;
+        let photo: GelbooruImageObject | null = null;
         try {
             do {
                 let jsonObj = await fetch(url);
@@ -44,8 +44,9 @@ export default class Yandere extends Booru {
                 }
 
                 jsonObj = await jsonObj.json()
-                if (jsonObj instanceof Array) {
-                    if (jsonObj.length === 0) {
+                if (jsonObj instanceof Object) {
+                    let imageObj: any = jsonObj;
+                    if (!imageObj.post) {
                         message = INVALID_TAG_PARTIAL_MSG;
                         // Get suggested tags
                         for (const tag of tagList) {
@@ -53,7 +54,7 @@ export default class Yandere extends Booru {
                             validTag = false;
                         }
                     } else {
-                        photo = jsonObj[0];
+                        photo = imageObj.post[0];
                         photoFound = this.photoValidation(photo!, sfwRequired);
                     }
                 }
@@ -79,7 +80,8 @@ export default class Yandere extends Booru {
         let returnMsg = "There was an error trying to get the tags.";
         // Fetch request Board API
         try {
-            const tagInfo = await this.tagSuggestionFetchTag(tag);
+            let tagInfo = await this.tagSuggestionFetchTag(tag);
+            tagInfo = tagInfo["tag"] ?? [];
             returnMsg = this.tagSuggestionMessageCreate(tagInfo, sfwRequired);
         } catch (error) {
             this.handleError(error);

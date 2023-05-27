@@ -2,9 +2,9 @@ import { CacheType, ChannelType, ChatInputCommandInteraction, SlashCommandBuilde
 import { BAD_TAG_MSG, STANDARD_ERROR_MSG, TOO_MANY_TAGS_MSG } from "../../../json/slash/fetch/fetchErrors.json";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
 import GuildModel from "../../../schemas/guild"
-import Danbooru from "../../../instances/classes/slash/fetch/Danbooru";
-import Gelbooru from "../../../instances/classes/slash/fetch/Gelbooru";
-import Yandere from "../../../instances/classes/slash/fetch/Yandere";
+import Danbooru from "../../../instances/classes/slash/fetch/sauce/Danbooru";
+import Gelbooru from "../../../instances/classes/slash/fetch/sauce/Gelbooru";
+import Yandere from "../../../instances/classes/slash/fetch/sauce/Yandere";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -60,7 +60,7 @@ module.exports = {
       // Interaction will always come from a channel
       const channel = interaction.channel!;
       if (channel.type === ChannelType.GuildText) {
-        const fetch = client.booru;
+        const fetch = client.sauce;
         const sfwRequired = !channel.nsfw || sfw;
         // Retrieve information
         const subcommand = interaction.options.getSubcommand();
@@ -69,11 +69,11 @@ module.exports = {
         let board: Danbooru | Gelbooru | Yandere;
         // Checks to see which command to call
         if (subcommand === "quick" || boardName === "danbooru") {
-          board = client.booru.danbooru;
+          board = client.sauce.danbooru;
         } else if (boardName === "gelbooru") {
-          board = client.booru.gelbooru;
+          board = client.sauce.gelbooru;
         } else {
-          board = client.booru.yandere;
+          board = client.sauce.yandere;
         }
 
         // Prep tags for usage

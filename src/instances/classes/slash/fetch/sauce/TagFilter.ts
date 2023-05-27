@@ -1,4 +1,4 @@
-import fetchParams from "../../../../json/slash/fetch/fetchParameter.json"
+import fetchParams from "../../../../../json/slash/fetch/fetchParameter.json"
 
 export default class TagFilter {
     public blacklist: Set<string> = new Set(fetchParams.BLACKLIST);

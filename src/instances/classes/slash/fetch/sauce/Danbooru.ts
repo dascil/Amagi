@@ -1,6 +1,6 @@
-import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../json/slash/fetch/fetchErrors.json";
-import { DanbooruImageObject } from "../../../interfaces/slash/fetch/ImageInterface";
-import { DANBOORU_BOARD } from "../../../objects/slash/fetch/ImageBoards";
+import { NO_SUITABLE_PHOTO_MSG, SITE_UNREACHABLE_MSG, STANDARD_ERROR_MSG, INVALID_TAG_PARTIAL_MSG } from "../../../../../json/slash/fetch/fetchErrors.json";
+import { DanbooruImageObject } from "../../../../interfaces/slash/fetch/ImageInterface";
+import { DANBOORU_BOARD } from "../../../../objects/slash/fetch/ImageBoards";
 import Booru from "./Booru";
 
 /**
