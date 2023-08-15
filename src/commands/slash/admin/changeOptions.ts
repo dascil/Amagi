@@ -27,7 +27,7 @@ module.exports = {
                 .setMaxLength(3)
             )
         ),
-    usage: "options {subcommand}",
+    usage: "options {command}",
     return: "Changes bot server settings.",
     async execute(interaction: ChatInputCommandInteraction, client: AmagiClient) {
         await interaction.deferReply();
