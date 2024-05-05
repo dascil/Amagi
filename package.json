@@ -17,12 +17,12 @@
   "author": "dascil",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/rest": "^1.7.0",
+    "@discordjs/rest": "^2.3.0",
     "chalk": "^4.1.2",
     "discord-api-types": "^0.37.37",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
-    "mongoose": "^7.1.1",
+    "mongoose": "^8.3.3",
     "typescript": "^5.0.4"
   }
 }
