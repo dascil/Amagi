@@ -58,7 +58,7 @@ export default class Yandere extends Booru {
                     }
                 }
                 interval++;
-            } while (interval < super.retries && validTag && !photoFound);
+            } while (interval < this.retries && validTag && !photoFound);
             if (validTag) {
                 message = photoFound ? photo!.file_url : NO_SUITABLE_PHOTO_MSG
             }
