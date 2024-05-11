@@ -10,6 +10,7 @@ export default class AmagiClient extends Client {
     public prefixCommands: Collection<string, PrefixCommand>;
     public cooldowns: Collection<string, Collection<string, number>>;
     public prefixCooldowns: Collection<string, Collection<string, number>>;
+    public soundList: Collection<string, string>;
     // Add colors for console messages
     public success: chalk.Chalk;
     public warning: chalk.Chalk;
@@ -26,6 +27,7 @@ export default class AmagiClient extends Client {
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildVoiceStates
             ],
 
             partials: [Partials.Channel]
@@ -39,6 +41,7 @@ export default class AmagiClient extends Client {
         this.prefixCommands = new Collection();
         this.cooldowns = new Collection();
         this.prefixCooldowns = new Collection();
+        this.soundList = new Collection();
         this.sauce = new Sauce()
     }
 }
