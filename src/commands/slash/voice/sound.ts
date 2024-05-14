@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
-import { AudioPlayerStatus, createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import { createReadStream } from 'node:fs';
 import filterQuery from "../../../instances/classes/voice/sound/SoundTagFilter";
 
@@ -23,7 +23,7 @@ module.exports = {
         let reply: string = "You must be in a voice channel to use this command.";
         try {
             // Filtered to prevent execution of malicious users
-            const query = filterQuery(interaction.options.getString("name")!);
+            const query = filterQuery(interaction.options.getString("name")!).toLowerCase();
 
             // Case: Sound file exists
             if (client.soundList.has(query)) {
