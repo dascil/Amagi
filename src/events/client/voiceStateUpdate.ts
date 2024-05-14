@@ -10,7 +10,7 @@ module.exports = {
             const connection = getVoiceConnection(oldState.guild.id);
             if (connection && connection.joinConfig.channelId === oldState.channelId) {
                 connection.destroy();
-                // TODO: Destroy connected Audio Player
+                // TODO: Destroy connected Audio Playergit 
             }
         }
     }
