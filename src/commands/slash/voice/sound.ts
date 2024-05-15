@@ -43,8 +43,12 @@ module.exports = {
                             selfDeaf: true,
                         });
                     }
-                    // Creates and plays resource
-                    const player = createAudioPlayer();
+                    // Gets existing player or creates a new one
+                    let player = client.audioPlayers.get(interaction.guildId!);
+                    if (!player) {
+                        player = createAudioPlayer();
+                        client.audioPlayers.set(interaction.guildId!, player);
+                    }
                     const resource = createAudioResource(createReadStream(client.soundList.get(query)!));
                     connection?.subscribe(player);
                     reply = "Playing sound file."
