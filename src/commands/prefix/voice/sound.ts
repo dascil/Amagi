@@ -9,7 +9,7 @@ module.exports = {
     description: "Play's sound in user's voice chat",
     usage: "sound [selected sound]",
     return: "A sound in the voice chat the user is in.",
-    cooldown: 0.25,
+    cooldown: 3,
     async execute(message: Message, args: Array<string>, client: AmagiClient) {
         if (args.length === 1) {
             let reply: string = "You must be in a voice channel to use this command.";
