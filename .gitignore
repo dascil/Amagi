@@ -1,6 +1,4 @@
 .env
 build
 node_modules
-*.mp3
-*.wav
 *.ogg

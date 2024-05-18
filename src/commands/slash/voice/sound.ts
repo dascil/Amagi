@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
-import { createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { createAudioPlayer, createAudioResource, generateDependencyReport, getVoiceConnection, joinVoiceChannel, StreamType } from "@discordjs/voice";
 import { createReadStream } from 'node:fs';
 import filterQuery from "../../../instances/classes/voice/sound/SoundTagFilter";
 
@@ -49,8 +49,9 @@ module.exports = {
                         player = createAudioPlayer();
                         client.audioPlayers.set(interaction.guildId!, player);
                     }
+                    console.log(player);
                     const resource = createAudioResource(createReadStream(client.soundList.get(query)!));
-                    connection?.subscribe(player);
+                    connection.subscribe(player);
                     reply = "Playing sound file."
                     player.play(resource);
                 }

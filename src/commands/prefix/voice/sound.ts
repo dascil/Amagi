@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import AmagiClient from "../../../instances/classes/client/AmagiClient";
-import { createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel, StreamType } from "@discordjs/voice";
 import { createReadStream } from 'node:fs';
 import filterQuery from "../../../instances/classes/voice/sound/SoundTagFilter";
 
@@ -42,7 +42,7 @@ module.exports = {
                             client.audioPlayers.set(message.guildId!, player);
                         }
                         const resource = createAudioResource(createReadStream(client.soundList.get(query)!));
-                        connection?.subscribe(player);
+                        connection.subscribe(player);
                         reply = "Playing sound file."
                         player.play(resource);
                     }
@@ -54,7 +54,7 @@ module.exports = {
                 console.log(client.failure("[ERROR] ") + "Unable to emit sound into voice chat server.");
                 console.error(error);
             }
-            message.reply({
+            await message.reply({
                 content: reply,
             });
         }

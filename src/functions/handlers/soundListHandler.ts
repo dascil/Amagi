@@ -9,9 +9,11 @@ module.exports = async (client: AmagiClient) => {
         const dirPath = "./assets/sounds";
         const { soundList } = client;
         readdirSync(dirPath).forEach((soundFile) => {
-            const soundName = soundFile.substring(0, soundFile.lastIndexOf(".")) || soundFile;
-            const soundFilePath = dirPath + "/" + soundFile;
-            soundList.set(soundName,soundFilePath);
+            if (soundFile.endsWith(".ogg")) {
+                const soundName = soundFile.substring(0, soundFile.lastIndexOf(".")) || soundFile;
+                const soundFilePath = dirPath + "/" + soundFile;
+                soundList.set(soundName, soundFilePath);
+            }
         });
 
         console.log(client.success("[SUCCESS] ") + "Sounds have been successfully loaded.");
