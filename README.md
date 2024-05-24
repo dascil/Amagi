@@ -22,6 +22,7 @@ A personal bot for your discord server. Handles both slash and prefix commands.
 # Features
 
 - Slash and Prefix Command
+- Voice Chat Sound Board Command
 - Fetch command to retrieve photo from image boards like danbooru and yandere
   - If tags are invalid, it will return a list of similar tags
   - Tag command to look up on specified boards
