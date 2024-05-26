@@ -1,6 +1,6 @@
 {
   "name": "amagi",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Discord bot for personal server",
   "main": "./build/bot.js",
   "scripts": {
@@ -17,15 +17,15 @@
   "author": "dascil",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "^0.9.0",
     "@discordjs/rest": "^2.3.0",
     "@discordjs/voice": "^0.17.0",
     "chalk": "^4.1.2",
-    "discord-api-types": "^0.37.37",
+    "discord-api-types": "^0.37.85",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "ffmpeg-static": "^5.2.0",
-    "mongoose": "^8.3.3",
+    "mongoose": "^8.4.0",
+    "opusscript": "^0.1.1",
     "sodium-native": "^4.1.1",
     "typescript": "^5.0.4"
   }
